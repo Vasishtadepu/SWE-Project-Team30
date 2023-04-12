@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">          
+</head>
+<body></br></br></br></br></br>
+    <div align="center">
+   <div align="center" class="loginbox">
+    <div class="loginheading">
+   </h1>Login</h1>
+</div></br></br></br></br>
+</h2>
+<form action="\login" method="POST">
+    <div class="loginmsg">{{message}}</div>
+    <input class="inputbox" type="text" id="username" name="username" placeholder="Enter your username"/></br></br>
+    <input class="inputbox" type="password" id="password" name="password" placeholder="Enter your password"/></br></br>
+    <label for="user">Are you a student or admin?</label>
+    <select name="user" id="user">
+        <option value="Student">Student</option>
+        <option value="Admin">Admin</option>
+    </select></br></br></br>
+    <input class="btn"  type="submit"  value="Sign In"></br></br>
+</form>
+</h2>
+   </div>
+</div>
+</body>
+</html>
