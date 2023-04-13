@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 import re
- 
+
  
 app = Flask(__name__)
  
@@ -53,6 +53,26 @@ def logout():
 @app.route('/formlist')
 def formlist():
     return render_template('formslist.html')
+
+
+class AdditionalCourseConversionForm:
+
+    def __init__(self,name,roll_no,):
+
+    
+    def create_instance():
+
+
+@app.route('\create_instance',methods=['GET','POST'])
+def create_instance():
+    
+@app.route('\save_instance',methods=['GET','POST'])
+def save_instance():
+    
+
+
+
+
 
 if __name__=="__main__":
     app.run(debug=True)
