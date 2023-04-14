@@ -25,8 +25,8 @@ app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
 mysql2 = MySQL(app)
 
-sender_mail = "teamswe30@gmail.com"
-sender_password = "txaxmstjnwhwofpi"
+sender_mail = "cs20btech11035@iith.ac.in"
+sender_password = "fgbboncngfheozws"
 
 forms_dictionary = {
     '1' : "Addtional Course Conversion",
@@ -136,7 +136,92 @@ class AdditionalCourseConversionForm:
         )
         mycursor.execute(query1, values1)
         mydb.commit()
-        return "Form submitted"
+        msg = Message(
+        "Additional Course Conversion Form Approval",
+        sender = sender_mail,
+        recipients= [dict['Guidemail']])
+        #msg.body="Follow this link to approve or deny. http://127.0.0.1:5000/approve/"+str(form_id)
+        msg.html=render_template('template1.html',details=dict,form_id=form_id)
+        mail.send(msg)
+        return 'sent'
+    def update_instance(form_id,action):
+        mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="Vasisht@27",
+        database="SWE"
+        )
+        mycursor = mydb.cursor()
+        if action=='2':
+             query2 = 'UPDATE submittedforms SET status=%s WHERE id=%s'
+             values2 = (action,int(form_id))
+             
+             mycursor.execute(query2,values2)
+             mydb.commit()
+             query = 'SELECT * from submittedforms where id=%s'
+             values = [int(form_id)]
+             mycursor.execute(query,values)
+             records = mycursor.fetchall()
+             row = records[-1]
+             student_mail = row[2]+'@iith.ac.in'
+             msg = Message("Additional Course Conversion Form Rejected",
+                           sender = sender_mail,
+                           recipients= [student_mail])
+             #msg.body="Follow this link to approve or deny. http://127.0.0.1:5000/approve/"+str(form_id)
+             msg.body="Your Additional Course Conversion Form is rejected"
+             mail.send(msg)
+             ret="form rejected."
+        elif action=='1':
+             query = 'SELECT * from additionalcourseconversion where id=%s'
+             values = [int(form_id)]
+             mycursor.execute(query,values)
+             records = mycursor.fetchall()
+             row = records[-1]
+             approvelevel = int(row[-1])+1
+             print(int(row[-1]),approvelevel)
+             query1='UPDATE additionalcourseconversion set approvelevel=%s WHERE id=%s'
+             values1=(approvelevel,int(form_id))
+             
+             mycursor.execute(query1,values1)
+             mydb.commit()
+             if approvelevel==4:
+                 query2 = 'UPDATE submittedforms SET status=%s WHERE id=%s'
+                 values2 = (action,int(form_id))
+                 mycursor.execute(query2,values2)
+                 mydb.commit()
+                 query = 'SELECT * from submittedforms where id=%s'
+                 values = [int(form_id)]
+                 mycursor.execute(query,values)
+                 records = mycursor.fetchall()
+                 row = records[-1]
+                 student_mail = row[2]+'@iith.ac.in'
+                 msg = Message("Additional Course Conversion Form Approved",
+                               sender = sender_mail,
+                               recipients= [student_mail])
+                 #msg.body="Follow this link to approve or deny. http://127.0.0.1:5000/approve/"+str(form_id)
+                 msg.body="Your Additional Course Conversion Form is approved."
+                 mail.send(msg)
+                 ret="completed approval."
+             else:
+                 query = 'SELECT * from additionalcourseconversion where id=%s'
+                 values = [int(form_id)]
+                 mycursor.execute(query,values)
+                 req_dict = [dict(line) for line in [zip([column[0] for column in mycursor.description],row) for row in mycursor.fetchall()]]
+                 
+                 mycursor.execute(query,values)
+                 records = mycursor.fetchall()
+                 row = records[-1]
+                 approver_mail = row[9+approvelevel]
+                 msg = Message("Additional Course Conversion Form Approval",
+                               sender = sender_mail,
+                               recipients= [approver_mail])
+                 #msg.body="Follow this link to approve or deny. http://127.0.0.1:5000/approve/"+str(form_id)
+                 msg.html=render_template('template1.html',details=req_dict[0],form_id=form_id)
+                 mail.send(msg)
+                 ret="sent mail to next person."
+        return ret
+                 
+    
 
 def Factory(forms = '1'):
     forms_dict = {'1' : AdditionalCourseConversionForm}
@@ -155,9 +240,30 @@ def save_instance():
     return form_obj.save_instance(request.form)
 
 
+@app.route('/form_handling',methods = ['GET','POST'])
+def form_handling():
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="Vasisht@27",
+        database="SWE"
+        )
+    mycursor = mydb.cursor()
+    if request.method == "POST":
+        form_id=request.form['form_id']
+        action=request.form['approve']
+        query1 = 'SELECT * from submittedforms where id = %s'
+        values1 = [int(form_id)]
+        mycursor.execute(query1,values1)
+        records = mycursor.fetchall()
+        row = records[-1]
+        form_type=row[1]
+        form_obj = Factory(str(form_type))
+    return form_obj.update_instance(form_id,action)
 
-
-
+@app.route('/approve/<form_id>')
+def approve(form_id):
+    return render_template('approve.html',form_id=form_id)
     
 
 
