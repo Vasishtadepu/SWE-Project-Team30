@@ -10,14 +10,25 @@
 <body></br></br></br></br>
     <div align="center">
     <div class="formlist">
-        <a href="" class="formbtn">Additional Course Conversion Form</a></br></br>
-        <a href="" class="formbtn">Assessment Committee report for JRF to SRF under MoE</a></br></br>
-        <a href="" class="formbtn">Student Leave Form</a></br></br>
-        <a href="" class="formbtn">Grade Change Form</a></br></br>
-        <a href="" class="formbtn">Guide Change Consent Form</a></br></br>
-        <a href="" class="formbtn">PHD Fellowship Form</a></br></br>
-        <a href="" class="formbtn">Open Colloquium Request Form</a></br></br>
-        <a href="" class="formbtn">Request for Financial Assisstance for presenting a paper in the Conference Form</a></br></br>
+        <form action="\create_instance" method="POST">
+            <input type="radio" name="Form_type" id="forms" class="forms" value="1" checked>
+            <label for="Form_type">Additional Course Conversion</label></br>
+            <input type="radio" name="Form_type" id="forms" class="forms" value="2">
+            <label for="Form_type">Assessment Committee Form</label><br>
+            <input type="radio" name="Form_type" id="forms" class="forms" value="3">
+            <label for="Form_type">Student Leave Form</label><br>
+            <input type="radio" name="Form_type" id="forms" class="forms" value="4">
+            <label for="Form_type">Grade Change Form</label><br>
+            <input type="radio" name="Form_type" id="forms" class="forms" value="5">
+            <label for="Form_type">Guide Change Consent Form</label><br>
+            <input type="radio" name="Form_type" id="forms" class="forms" value="6">
+            <label for="Form_type">PHD Fellowship Form</label><br>
+            <input type="radio" name="Form_type" id="forms" class="forms" value="7">
+            <label for="Form_type">Open Colloquium Request Form</label><br>
+            <input type="radio" name="Form_type" id="forms" class="forms" value="8">
+            <label for="Form_type">Request for Financial Assisstance for presenting a paper in the Conference Form</label><br>
+            <input type="submit" value="Create form!">
+        </form>
     </div>
 </div> </br></br></br></br></br>
 </body>

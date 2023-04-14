@@ -1,8 +1,7 @@
-
 CREATE TABLE IF NOT EXISTS `studentlogin`
 (
     `id` int(11) NOT NULL AUTO_INCREMENT,
-    `username` varchar(50) NOT NULL,
+    `name` varchar(50) NOT NULL,
     `password` varchar(50) NOT NULL,
     `email` varchar(50) NOT NULL,
     `rollno` varchar(50) NOT NULL,
@@ -51,5 +50,5 @@ CREATE TABLE IF NOT EXISTS `additionalcourseconversion`
 
 );
 
-INSERT INTO studentlogin(username,password,email,rollno,department) VALUES ('Manaswini','2312','cs20btech11035@iith.ac.in','CS20BTECH11035','CSE');
+INSERT INTO studentlogin(name,password,email,rollno,department) VALUES ('Manaswini','2312','cs20btech11035@iith.ac.in','CS20BTECH11035','CSE');
 INSERT INTO adminlogin(username,password,email) VALUES ('Vasisht','2711','cs20btech11002@iith.ac.in');

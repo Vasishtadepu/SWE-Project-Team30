@@ -21,6 +21,14 @@
         </tr>
         {% endfor %}
     </table>
+    <table border=2>
+        {% for i in range(approvelevel) %}
+        <tr>
+            <th>approver{{i+1}}</th>
+            <th>approved</th>
+        </tr>
+        {% endfor %}
+    </table>
 </h2>
 <p> Follow this link to approve or deny. http://127.0.0.1:5000/approve/{{form_id}}</p>
    </div>

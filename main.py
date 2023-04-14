@@ -14,7 +14,7 @@ app.secret_key = 'your secret key'
  
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'Vasisht@27'
+app.config['MYSQL_PASSWORD'] = '2312'
 app.config['MYSQL_DB'] = 'SWE'
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
@@ -38,23 +38,23 @@ forms_dictionary = {
 @app.route('/login', methods =['GET', 'POST'])
 def login():
     message = ''
-    if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
-        username = request.form['username']
+    if request.method == 'POST' and 'email' in request.form and 'password' in request.form:
+        email = request.form['email']
         password = request.form['password']
         user=request.form['user']
         cursor = mysql2.connection.cursor(MySQLdb.cursors.DictCursor)
         if user=='Student':
-            cursor.execute('SELECT * FROM studentlogin WHERE username = % s AND password = % s', (username, password, ))
+            cursor.execute('SELECT * FROM studentlogin WHERE email = % s AND password = % s', (email, password, ))
             user_account = cursor.fetchone()
             homepage='studenthomepage.html'
         elif user=='Admin':
-            cursor.execute('SELECT * FROM adminlogin WHERE username = % s AND password = % s', (username, password, ))
+            cursor.execute('SELECT * FROM adminlogin WHERE email = % s AND password = % s', (email, password, ))
             user_account = cursor.fetchone()
             homepage='adminhomepage.html'
         if user_account:
             session['loggedin'] = True
             session['id'] = user_account['id']
-            session['username'] = user_account['username']
+            session['email'] = user_account['email']
             message = 'Logged in successfully !'
             return render_template(homepage, message = message)
         else:
@@ -66,7 +66,7 @@ def login():
 def logout():
     session.pop('loggedin', None)
     session.pop('id', None)
-    session.pop('username', None)
+    session.pop('email', None)
     return redirect(url_for('login'))
  
 @app.route('/formlist')
@@ -98,7 +98,7 @@ class AdditionalCourseConversionForm:
         mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="Vasisht@27",
+        password="2312",
         database="SWE"
         )
         query2 = 'INSERT INTO submittedforms (formtype,rollno,status) VALUES (%s,%s,%s)'
@@ -141,14 +141,14 @@ class AdditionalCourseConversionForm:
         sender = sender_mail,
         recipients= [dict['Guidemail']])
         #msg.body="Follow this link to approve or deny. http://127.0.0.1:5000/approve/"+str(form_id)
-        msg.html=render_template('template1.html',details=dict,form_id=form_id)
+        msg.html=render_template('template1.html',details=dict,form_id=form_id,approvelevel=0)
         mail.send(msg)
-        return 'sent'
+        return 'mail sent to first approver'
     def update_instance(form_id,action):
         mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="Vasisht@27",
+        password="2312",
         database="SWE"
         )
         mycursor = mydb.cursor()
@@ -216,7 +216,7 @@ class AdditionalCourseConversionForm:
                                sender = sender_mail,
                                recipients= [approver_mail])
                  #msg.body="Follow this link to approve or deny. http://127.0.0.1:5000/approve/"+str(form_id)
-                 msg.html=render_template('template1.html',details=req_dict[0],form_id=form_id)
+                 msg.html=render_template('template1.html',details=req_dict[0],form_id=form_id,approvelevel=approvelevel)
                  mail.send(msg)
                  ret="sent mail to next person."
         return ret
@@ -245,7 +245,7 @@ def form_handling():
     mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="Vasisht@27",
+        password="2312",
         database="SWE"
         )
     mycursor = mydb.cursor()
