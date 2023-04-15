@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -22,4 +22,21 @@
 </div> </br></br></br></br></br>
 
 </body>
-</html>
+</html> -->
+
+<!-- Jinja extending base.html -->
+{% extends "base.html" %}
+{% block content %}
+    <div align="center">
+        <div class="homepageheading">
+            <h1 class="bottom">
+                Hi {{session.email}}!!</br></br> Welcome to the home page...				
+            </h1></br></br></br>
+        </div> 
+    <div class="homeoptions">
+        <a href="{{ url_for('formlist') }}" class="homebtn">Submit a new form</a></br></br></br>
+        <a href="" class="homebtn">Submitted forms history</a></br></br></br>
+        <!-- <a href="{{ url_for('logout') }}" class="homebtn">Logout</a> -->
+    </div>
+
+{% endblock %}

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -32,4 +32,22 @@
     </div>
 </div> </br></br></br></br></br>
 </body>
-</html>
+</html> -->
+
+{% extends "base.html" %}
+{% block content %}
+<form action="\create_instance" method="POST">
+  {% for form in session.forms %}
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="Form_type" id="flexRadioDefault1" value="{{form}}">
+        <label class="form-check-label" for="flexRadioDefault1">
+            <!-- {{form}} -->
+            {{session.forms[form]}}
+        </label>
+    </div>
+  {% endfor %}
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Create Form</button>
+    </div>
+</form>
+{% endblock %}

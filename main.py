@@ -14,8 +14,8 @@ app.secret_key = 'your secret key'
  
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = '2312'
-app.config['MYSQL_DB'] = 'SWE'
+app.config['MYSQL_PASSWORD'] = '1234'
+app.config['MYSQL_DB'] = 'test'
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USERNAME'] = 'cs20btech11035@iith.ac.in'
@@ -71,6 +71,7 @@ def logout():
  
 @app.route('/formlist')
 def formlist():
+    session['forms'] = forms_dictionary
     return render_template('formslist.html')
 
 @app.route('/create_forms',methods = ['GET','POST'])
@@ -98,8 +99,8 @@ class AdditionalCourseConversionForm:
         mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="2312",
-        database="SWE"
+        password="1234",
+        database="test"
         )
         query2 = 'INSERT INTO submittedforms (formtype,rollno,status) VALUES (%s,%s,%s)'
         values2 = (
@@ -148,8 +149,8 @@ class AdditionalCourseConversionForm:
         mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="2312",
-        database="SWE"
+        password="1234",
+        database="test"
         )
         mycursor = mydb.cursor()
         if action=='2':
@@ -245,8 +246,8 @@ def form_handling():
     mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="2312",
-        database="SWE"
+        password="1234",
+        database="test"
         )
     mycursor = mydb.cursor()
     if request.method == "POST":
