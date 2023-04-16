@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Additional Course Conversion Form</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">          
+</head>
+<body></br></br></br></br></br>
+   <div  class="form">
+    <div class="formheading">
+   </h1>Additional Course Conversion Form</h1>
+</div></br></br></br></br>
+</h2>
+    <table border=2>
+        {% for key,value in details.items() %}
+        <tr>
+            <th>{{ key }}</th>
+            <th>{{ value }}</th>
+        </tr>
+        {% endfor %}
+    </table>
+    <table border=2>
+        {% for i in range(approvelevel) %}
+        <tr>
+            <th>approver{{i+1}}</th>
+            <th>approved</th>
+        </tr>
+        {% endfor %}
+    </table>
+</h2>
+<p> Follow this link to approve or deny. http://127.0.0.1:5000/approve/{{form_id}}/{{approvelevel}}</p>
+   </div>
+</body>
+</html>

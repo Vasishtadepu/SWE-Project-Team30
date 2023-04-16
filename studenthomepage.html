@@ -1,0 +1,43 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage </title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">      
+</head>
+<body>
+    <div align="center">
+        <div class="homepageheading">
+            <h1 class="bottom">
+                Hi {{session.username}}!!</br></br> Welcome to the home page...				
+            </h1></br></br></br>
+        </div> 
+    <div class="homeoptions">
+        <a href="{{ url_for('formlist') }}" class="homebtn">Submit a new form</a></br></br></br>
+        <a href="" class="homebtn">Submitted forms history</a></br></br></br>
+        <a href="{{ url_for('logout') }}" class="homebtn">Logout</a>
+    </div>
+</div> </br></br></br></br></br>
+
+</body>
+</html> -->
+
+<!-- Jinja extending base.html -->
+{% extends "base.html" %}
+{% block content %}
+    <div align="center">
+        <div class="homepageheading">
+            <p>{{message}}</p></br></br>
+            <h1 class="bottom">
+                Hi {{session.email}}!!</br></br> Welcome to the home page...				
+            </h1></br></br></br>
+        </div> 
+    <div class="homeoptions">
+        <a href="{{ url_for('formlist') }}" class="homebtn">Submit a new form</a></br></br></br>
+        <a href="" class="homebtn">Submitted forms history</a></br></br></br>
+        <!-- <a href="{{ url_for('logout') }}" class="homebtn">Logout</a> -->
+    </div>
+
+{% endblock %}
