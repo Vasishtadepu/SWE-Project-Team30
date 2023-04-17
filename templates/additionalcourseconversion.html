@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -54,4 +54,83 @@
 </h2>
    </div>
 </body>
-</html>
+</html> -->
+
+<!-- extending base.html jinja -->
+{% extends "base.html" %}
+{% block content %}
+<!-- Path: templates/additionalcourseconversion.html -->
+<form action="\save_instance" method="POST">
+    <div>
+        <input type="hidden" name="Form_type", value="1">
+        <div class="mb-3">
+            <label for="Student Name" class="form-label">Student Name</label>
+            <input class="form-control" type="text" id="StudentName" name="StudentName" placeholder="Enter your name"/>
+        </div>
+        <div class="mb-3">
+            <label for="Roll No." class="form-label">Roll No.</label>
+            <input class="form-control" type="text" id="RollNo" name="RollNo" placeholder="Enter your RollNo"/>
+        </div>
+        <div class="mb-3">
+            <label for="Department" class="form-label">Department</label>
+            <input class="form-control" type="text" id="Department" name="Department" placeholder="Enter your Department"/>
+        </div>
+    </div>
+    <div class="mb-3">
+        <label for="Additional courses" class="form-label">Courses to be shown as Additional</label>
+    </div>
+        <div class="mb-3">
+            <label for="Name of the Course" class="form-label">Name of the Course</label>
+            <input class="form-control" type="text" id="CourseName1" name="CourseName1"/>
+        </div>
+        <div class="mb-3">
+            <label for="Course Number" class="form-label">Course Number</label>
+            <input class="form-control" type="text" id="CourseNumber1" name="CourseNumber"/>
+        </div>
+        <div class="mb-3">
+            <label for="Credits" class="form-label">Credits</label>
+            <input class="form-control" type="text" id="Credits1" name="Credits1"/>
+        </div>
+        <div class="mb-3">
+            <label for="Semester" class="form-label">Semester</label>
+            <input class="form-control" type="text" id="Semester1" name="Semester1"/>
+        </div>
+    </div>
+    <div class="mb-3">
+        <label for="Name of the Course" class="form-label">Name of the Course</label>
+        <input class="form-control" type="text" id="CourseName2" name="CourseName2"/>
+    </div>
+    <div class="mb-3">
+        <label for="Course Number" class="form-label">Course Number</label>
+        <input class="form-control" type="text" id="CourseNumber2" name="CourseNumber2"/>
+    </div>
+    <div class="mb-3">
+        <label for="Credits" class="form-label">Credits</label>
+        <input class="form-control" type="text" id="Credits2" name="Credits2"/>
+    </div>
+    <div class="mb-3">
+        <label for="Semester" class="form-label">Semester</label>
+        <input class="form-control" type="text" id="Semester2" name="Semester2"/>
+    </div>
+    <div class="mb-3">
+        <label for="Guide mail id" class="form-label">Guide mail id</label>
+        <input class="form-control" type="text" id="Guidemail" name="Guidemail"/>
+    </div>
+    <div class="mb-3">
+        <label for="HoD mail id" class="form-label">HoD mail id</label>
+        <input class="form-control" type="text" id="HoDmail" name="HoDmail"/>
+    </div>
+    <div class="mb-3">
+        <label for="Registrar mail id" class="form-label">Registrar mail id</label>
+        <input class="form-control" type="text" id="Registrarmail" name="Registrarmail"/>
+    </div>
+    <div class="mb-3">
+        <label for="Dean mail id" class="form-label">Dean mail id</label>
+        <input class="form-control" type="text" id="Deanmail" name="Deanmail"/>
+    </div>
+    <div class="mb-3">
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+</form>
+
+{% endblock %}

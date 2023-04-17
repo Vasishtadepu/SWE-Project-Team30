@@ -18,8 +18,8 @@ sender_password = "fgbboncngfheozws"
 mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="Vasisht@27",
-        database="SWE"
+        password="1234",
+        database="test",
         )
 cursor = mydb.cursor()
 
@@ -57,11 +57,20 @@ def login():
             message = 'Invalid credentials. Try again.'
     return render_template('login.html', message = message)
 
+@app.route('/homepage')
+def homepage():
+    if session['loggedin']==False:
+        return redirect(url_for('login', message='Please login to continue !'))
+    if session['id'] and session['email']:
+        return render_template('studenthomepage.html')
+    else:
+        return redirect(url_for('login'))
+
 
 @app.route('/formlist')
 def formlist():
     if session['loggedin']==False:
-        return redirect(url_for('login'))
+        return redirect(url_for('login', message='Please login to continue !'))
     session['forms'] = forms_dictionary
     return render_template('formslist.html')
 
@@ -71,7 +80,7 @@ def logout():
     session.pop('loggedin', None)
     session.pop('id', None)
     session.pop('email', None)
-    return redirect(url_for('login'))
+    return redirect(url_for('login', message='Logged out successfully !'))
 
 class AdditionalCourseConversionForm:
 
@@ -201,7 +210,7 @@ def Factory(forms = '1'):
 @app.route('/create_instance',methods=['GET','POST'])
 def create_instance():
     if session['loggedin']==False:
-        return redirect(url_for('login'))
+        return redirect(url_for('login', message='Please login first !'))
     if request.method == 'POST':
         form_obj = Factory(request.form['Form_type'])
     return form_obj.create_instance()   
@@ -209,7 +218,7 @@ def create_instance():
 @app.route('/save_instance',methods = ['GET','POST'])
 def save_instance():
     if session['loggedin']==False:
-        return redirect(url_for('login'))
+        return redirect(url_for('login', message='Please login first !'))
     if request.method == "POST":
         form_obj = Factory(request.form['Form_type'])
     return form_obj.save_instance(request.form)
@@ -218,7 +227,7 @@ def save_instance():
 @app.route('/form_handling',methods = ['GET','POST'])
 def form_handling():
     if session['loggedin']==False:
-        return redirect(url_for('login'))
+        return redirect(url_for('login', message='Please login first !'))
     if request.method == "POST":
         form_id=request.form['form_id']
         action=request.form['approve']
@@ -234,7 +243,7 @@ def form_handling():
 @app.route('/approve/<form_id>/<approvelevel>')
 def approve(form_id,approvelevel):
     if session['loggedin']==False:
-        return redirect(url_for('login'))
+        return redirect(url_for('login', message='Please login first !'))
     query = 'SELECT * from additionalcourseconversion where id=%s'
     values = [int(form_id)]
     cursor.execute(query,values)
