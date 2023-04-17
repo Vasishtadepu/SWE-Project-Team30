@@ -36,6 +36,11 @@
 
 {% extends "base.html" %}
 {% block content %}
+{%if message%}
+<div class="alert alert-primary" role="alert">
+    {{message}}
+</div>
+{% endif %}
 <form action="\create_instance" method="POST">
   {% for form in session.forms %}
     <div class="form-check">

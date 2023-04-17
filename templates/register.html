@@ -1,0 +1,30 @@
+<!-- jinja extends base.html -->
+
+{% extends "base.html" %}
+{% block content %}
+<form action="\register" method="POST">
+    <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Email address</label>
+        <input type="email" class="form-control" id="exampleInputEmail1" name="email">
+    </div>
+    <div class="mb-3">
+        <label for="exampleInputPassword1" class="form-label">Password</label>
+        <input type="password" class="form-control" id="exampleInputPassword1" name="password">
+    </div>
+    <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <input type="text" class="form-control" id="username" name="username">
+    </div>
+    <div class="mb-3">
+        <label for="rollno" class="form-label">RollNo</label>
+        <input type="text" class="form-control" id="rollno" name="rollno">
+    </div>
+    <div class="mb-3">
+        <label for="department" class="form-label">Department</label>
+        <input type="text" class="form-control" id="department" name="department">
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Sign Up</button>
+    </div>
+</form>
+{% endblock %}
