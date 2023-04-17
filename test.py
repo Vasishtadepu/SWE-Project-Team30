@@ -24,7 +24,7 @@ sender_password = "fgbboncngfheozws"
 mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="1234",
+        password="Vasisht@27",
         database="test"
         )
 cursor = mydb.cursor()
@@ -81,8 +81,9 @@ def register():
         elif not username or not password or not email:
             msg = 'Please fill out the form !'
         else:
-            cursor.execute('INSERT INTO studentlogin VALUES (%s,%s, %s, %s, %s)', (username, password, email, rollno, department))
-            mysql.connection.commit()
+            cursor.execute('INSERT INTO studentlogin (name,password,email,rollno,department) VALUES (%s,%s, %s, %s, %s)', (username, password, email, rollno, department))
+            mydb.commit()
+            print("You came here")
             msg = 'You have successfully registered !'
             return redirect(url_for('login'))
     elif request.method == 'POST':
@@ -421,8 +422,6 @@ def save_instance():
 
 @app.route('/form_handling',methods = ['GET','POST'])
 def form_handling():
-    if session['loggedin']==False:
-        return redirect(url_for('login'))
     if request.method == "POST":
         form_id=request.form['form_id']
         action=request.form['approve']
@@ -440,8 +439,6 @@ forms_tables={1 : 'additionalcourseconversion',
 
 @app.route('/approve/<form_id>/<approvelevel>')
 def approve(form_id,approvelevel):
-    if session['loggedin']==False:
-        return redirect(url_for('login'))
     query1 = 'SELECT * from submittedforms where id=%s'
     values1 = [int(form_id)]
     cursor.execute(query1,values1)
