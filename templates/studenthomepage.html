@@ -28,19 +28,15 @@
 {% extends "base.html" %}
 {% block content %}
     <div align="center">
-        {% if message %}
-        <div class="alert alert-primary" role="alert">
-            {{message}}
-        </div>
-        {% endif %}
         <div class="homepageheading">
+            <p>{{message}}</p></br></br>
             <h1 class="bottom">
                 Hi {{session.email}}!!</br></br> Welcome to the home page...				
             </h1></br></br></br>
         </div> 
     <div class="homeoptions">
         <a href="{{ url_for('formlist') }}" class="homebtn">Submit a new form</a></br></br></br>
-        <a href="#" class="homebtn">Submitted forms history</a></br></br></br>
+        <a href="" class="homebtn">Submitted forms history</a></br></br></br>
         <!-- <a href="{{ url_for('logout') }}" class="homebtn">Logout</a> -->
     </div>
 
