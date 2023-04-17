@@ -88,7 +88,7 @@ def register():
             return redirect(url_for('login'))
     elif request.method == 'POST':
         msg = 'Please fill out the form !'
-    return render_template('register.html', msg = msg)
+    return render_template('register.html', message = msg)
 
 @app.route('/homepage')
 def homepage():
