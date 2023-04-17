@@ -24,8 +24,8 @@ sender_password = "fgbboncngfheozws"
 mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="Vasisht@27",
-        database="test"
+        password="2312",
+        database="SWE"
         )
 cursor = mydb.cursor()
 
@@ -445,6 +445,7 @@ def approve(form_id,approvelevel):
     records = cursor.fetchall()
     row = records[-1]
     form_type=row[1]
+    status=row[-1]
     #print('form_type=',form_type,type(form_type))
     table=forms_tables[form_type]
     query = 'SELECT * from '+table+' where id=%s'
@@ -454,7 +455,7 @@ def approve(form_id,approvelevel):
     row = records[-1]
     current_approvelevel = row[-1]
     print(type(current_approvelevel),type(approvelevel))
-    if current_approvelevel==approvelevel:
+    if current_approvelevel==approvelevel and status!='2':
         return render_template('approve.html',form_id=form_id,approvelevel=approvelevel)
     return "already responded"
     
