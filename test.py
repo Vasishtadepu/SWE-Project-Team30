@@ -1,8 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_mail import Mail,Message
 import mysql.connector
+from flask_wtf import FlaskForm
+from wtforms import StringField, validators, PasswordField, SubmitField,HiddenField,TextAreaField, IntegerField, BooleanField,RadioField
+from wtforms.validators import DataRequired, Email
+from flask_wtf.file import FileField, FileRequired
+from flask_bootstrap import Bootstrap
 
 app = Flask(__name__)
+Bootstrap(app)
 app.secret_key = 'your secret key'
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
@@ -18,14 +24,14 @@ sender_password = "fgbboncngfheozws"
 mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="Vasisht@27",
+        password="2312",
         database="SWE"
         )
 cursor = mydb.cursor()
 
 forms_dictionary = {
     '1' : "Addtional Course Conversion",
-    '2' : "Assessment Commitee form"
+    '2' : "Leave form"
 }
 
 @app.route('/')
@@ -73,13 +79,34 @@ def logout():
     session.pop('email', None)
     return redirect(url_for('login'))
 
+class AdditionalCourseConversionFormdetails(FlaskForm):
+    Form_type = HiddenField('Form_type')
+    StudentName = StringField(label='StudentName', validators=[DataRequired()])
+    RollNo = StringField(label='RollNo', validators=[DataRequired()])
+    Department = StringField(label='Department', validators=[DataRequired()])
+    CourseName1 = StringField(label='CourseName1', validators=[DataRequired()])
+    CourseNumber1 = StringField(label='CourseNumber1', validators=[DataRequired()])
+    Credits1 = IntegerField(label='Credits1', validators=[DataRequired()])
+    Semester1 = IntegerField(label='Semester1', validators=[DataRequired()])
+    CourseName2 = StringField(label='CourseName2', validators=[DataRequired()])
+    CourseNumber2 = StringField(label='CourseNumber2', validators=[DataRequired()])
+    Credits2 = IntegerField(label='Credits2', validators=[DataRequired()])
+    Semester2 = IntegerField(label='Semester2', validators=[DataRequired()])
+    Guidemail = StringField(label='Guidemail', validators=[DataRequired(), Email(granular_message=True)])
+    HoDmail = StringField(label='HoDmail', validators=[DataRequired(), Email(granular_message=True)])
+    Registrarmail = StringField(label='Registrarmail', validators=[DataRequired(), Email(granular_message=True)])
+    Deanmail = StringField(label='Deanmail', validators=[DataRequired(), Email(granular_message=True)])
+    submit = SubmitField(label="submit")
+
+
 class AdditionalCourseConversionForm:
 
     def create_instance():
-        return render_template('additionalcourseconversion.html')
-    
+        cform=AdditionalCourseConversionFormdetails(request.values,Form_type="1")
+        return render_template('form.html',form=cform)
 
     def save_instance(dict):
+        dict={key: val for key,val in dict.items() if key!='csrf_token'}
         query2 = 'INSERT INTO submittedforms (formtype,rollno,status) VALUES (%s,%s,%s)'
         values2 = (
             dict['Form_type'],
@@ -96,9 +123,11 @@ class AdditionalCourseConversionForm:
         row = records[-1]
         form_id = row[0]
 
-        query1 = 'INSERT INTO additionalcourseconversion VALUES (%s, %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+        query1 = 'INSERT INTO additionalcourseconversion VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
         values1 = (
             form_id,
+            dict['StudentName'],
+            dict['RollNo'],
             dict['CourseName1'],
             dict['CourseNumber1'],
             int(dict['Credits1']),
@@ -185,7 +214,7 @@ class AdditionalCourseConversionForm:
                  cursor.execute(query,values)
                  records = cursor.fetchall()
                  row = records[-1]
-                 approver_mail = row[9+approvelevel]
+                 approver_mail = row[11+approvelevel]
                  msg = Message("Additional Course Conversion Form Approval",
                                sender = sender_mail,
                                recipients= [approver_mail])
@@ -193,9 +222,148 @@ class AdditionalCourseConversionForm:
                  mail.send(msg)
                  ret="sent mail to next person."
         return ret
+
+class LeaveFormdetails(FlaskForm):
+    Form_type = HiddenField('Form_type')
+    StudentName = StringField(label='StudentName', validators=[DataRequired()])
+    RollNo = StringField(label='RollNo', validators=[DataRequired()])
+    semester = IntegerField(label='semester', validators=[DataRequired()])
+    leavefrom = StringField(label='leavefrom', validators=[DataRequired()])
+    leaveto = StringField(label='leaveto', validators=[DataRequired()])
+    noofdays = IntegerField(label='noofdays', validators=[DataRequired()])
+    reason = StringField(label='reason', validators=[DataRequired()])
+    phone = StringField(label='phone', validators=[DataRequired()])
+    proof = FileField()
+    Guidemail = StringField(label='Guidemail', validators=[DataRequired(), Email(granular_message=True)])
+    HoDmail = StringField(label='HoDmail', validators=[DataRequired(), Email(granular_message=True)])
+    DAmail = StringField(label='DAmail', validators=[DataRequired(), Email(granular_message=True)])
+    submit = SubmitField(label="submit")
+
+class LeaveForm:
+
+    def create_instance():
+        cform=LeaveFormdetails(request.values,Form_type="2")
+        return render_template('form.html',form=cform)
+    
+    def save_instance(dict):
+        dict={key: val for key,val in dict.items() if key!='csrf_token'}
+        query2 = 'INSERT INTO submittedforms (formtype,rollno,status) VALUES (%s,%s,%s)'
+        values2 = (
+            dict['Form_type'],
+            dict['RollNo'],
+            0
+        )
+        cursor.execute(query2,values2)
+        mydb.commit()
+
+        query3 = 'SELECT * from submittedforms where rollno = %s and formtype = %s'
+        values3 = (dict['RollNo'],dict['Form_type'])
+        cursor.execute(query3,values3)
+        records = cursor.fetchall()
+        row = records[-1]
+        form_id = row[0]
+
+        query1 = 'INSERT INTO leaveform VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+        values1 = (
+            form_id,
+            dict['StudentName'],
+            dict['RollNo'],
+            int(dict['semester']),
+            dict['leavefrom'],
+            dict['leaveto'],
+            int(dict['noofdays']),
+            dict['reason'],
+            dict['phone'],
+            dict['Guidemail'],
+            dict['HoDmail'],
+            dict['DAmail'],
+            0
+        )
+        cursor.execute(query1, values1)
+        mydb.commit()
+        msg = Message(
+        "Leave Form Approval",
+        sender = sender_mail,
+        recipients= [dict['Guidemail']])
+        msg.html=render_template('template1.html',details=dict,form_id=form_id,approvelevel=0)
+        mail.send(msg)
+        return render_template('studenthomepage.html', message ='mail sent to first approver')
+    
+
+    def update_instance(form_id,action):
+        if action=='2':
+             
+             query2 = 'UPDATE submittedforms SET status=%s WHERE id=%s'
+             values2 = (action,int(form_id))
+             cursor.execute(query2,values2)
+             mydb.commit()
+
+             query = 'SELECT * from submittedforms where id=%s'
+             values = [int(form_id)]
+             cursor.execute(query,values)
+             records = cursor.fetchall()
+             row = records[-1]
+             student_mail = row[2]+'@iith.ac.in'
+             msg = Message("Leave Form Rejected",
+                           sender = sender_mail,
+                           recipients= [student_mail])
+             msg.body="Your Leave Form is rejected"
+             mail.send(msg)
+             ret="form rejected."
+        elif action=='1':
+             query = 'SELECT * from leaveform where id=%s'
+             values = [int(form_id)]
+             cursor.execute(query,values)
+             records = cursor.fetchall()
+             row = records[-1]
+             approvelevel = int(row[-1])+1
+
+
+             query1='UPDATE leaveform set approvelevel=%s WHERE id=%s'
+             values1=(approvelevel,int(form_id))
+             cursor.execute(query1,values1)
+             mydb.commit()
+             if approvelevel==3:
+                 query2 = 'UPDATE submittedforms SET status=%s WHERE id=%s'
+                 values2 = (action,int(form_id))
+                 cursor.execute(query2,values2)
+                 mydb.commit()
+
+
+                 query = 'SELECT * from submittedforms where id=%s'
+                 values = [int(form_id)]
+                 cursor.execute(query,values)
+                 records = cursor.fetchall()
+                 row = records[-1]
+                 student_mail = row[2]+'@iith.ac.in'
+                 msg = Message("leave Form Approved",
+                               sender = sender_mail,
+                               recipients= [student_mail])
+                 msg.body="Your leave Form is approved."
+                 mail.send(msg)
+                 ret="completed approval."
+             else:
+                 query = 'SELECT * from leaveform where id=%s'
+                 values = [int(form_id)]
+                 cursor.execute(query,values)
+                 req_dict = [dict(line) for line in [zip([column[0] for column in cursor.description],row) for row in cursor.fetchall()]]
+                 
+                 cursor.execute(query,values)
+                 records = cursor.fetchall()
+                 row = records[-1]
+                 approver_mail = row[9+approvelevel]
+                 msg = Message("leave Form Approval",
+                               sender = sender_mail,
+                               recipients= [approver_mail])
+                 msg.html=render_template('template1.html',details=req_dict[0],form_id=form_id,approvelevel=approvelevel)
+                 mail.send(msg)
+                 ret="sent mail to next person."
+        return ret
+
     
 def Factory(forms = '1'):
-    forms_dict = {'1' : AdditionalCourseConversionForm}
+    forms_dict = {'1' : AdditionalCourseConversionForm,
+                  '2' : LeaveForm}
     return forms_dict[forms]
 
 @app.route('/create_instance',methods=['GET','POST'])
@@ -212,6 +380,7 @@ def save_instance():
         return redirect(url_for('login'))
     if request.method == "POST":
         form_obj = Factory(request.form['Form_type'])
+        print('form type=',request.form['Form_type'])
     return form_obj.save_instance(request.form)
 
 
@@ -231,11 +400,22 @@ def form_handling():
         form_obj = Factory(str(form_type))
     return form_obj.update_instance(form_id,action)
 
+forms_tables={1 : 'additionalcourseconversion',
+              2 : 'leaveform'}
+
 @app.route('/approve/<form_id>/<approvelevel>')
 def approve(form_id,approvelevel):
     if session['loggedin']==False:
         return redirect(url_for('login'))
-    query = 'SELECT * from additionalcourseconversion where id=%s'
+    query1 = 'SELECT * from submittedforms where id=%s'
+    values1 = [int(form_id)]
+    cursor.execute(query1,values1)
+    records = cursor.fetchall()
+    row = records[-1]
+    form_type=row[1]
+    #print('form_type=',form_type,type(form_type))
+    table=forms_tables[form_type]
+    query = 'SELECT * from '+table+' where id=%s'
     values = [int(form_id)]
     cursor.execute(query,values)
     records = cursor.fetchall()
