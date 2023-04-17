@@ -24,8 +24,8 @@ sender_password = "fgbboncngfheozws"
 mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="2312",
-        database="SWE"
+        password="1234",
+        database="test"
         )
 cursor = mydb.cursor()
 
@@ -62,6 +62,41 @@ def login():
         else:
             message = 'Invalid credentials. Try again.'
     return render_template('login.html', message = message)
+
+@app.route('/register', methods =['GET', 'POST'])
+def register():
+    msg = ''
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form :
+        username = request.form['username']
+        password = request.form['password']
+        email = request.form['email']
+        rollno = request.form['rollno']
+        department = request.form['department']
+        # cursor = mysql.connection.cursor(cursor.DictCursor)
+        values = (str(email), )
+        cursor.execute('SELECT * FROM studentlogin WHERE email = %s', values)
+        account = cursor.fetchone()
+        if account:
+            msg = 'Account already exists !'
+        elif not username or not password or not email:
+            msg = 'Please fill out the form !'
+        else:
+            cursor.execute('INSERT INTO studentlogin VALUES (%s,%s, %s, %s, %s)', (username, password, email, rollno, department))
+            mysql.connection.commit()
+            msg = 'You have successfully registered !'
+            return redirect(url_for('login'))
+    elif request.method == 'POST':
+        msg = 'Please fill out the form !'
+    return render_template('register.html', msg = msg)
+
+@app.route('/homepage')
+def homepage():
+    if session['loggedin']==False:
+        return redirect(url_for('login', message='Please login to continue !'))
+    if session['id'] and session['email']:
+        return render_template('studenthomepage.html')
+    else:
+        return redirect(url_for('login'))
 
 
 @app.route('/formlist')
