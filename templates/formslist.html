@@ -42,12 +42,12 @@
 </div>
 {% endif %}
 <form action="\create_instance" method="POST">
-  {% for form in session.forms %}
+  {% for table_name in session.forms %}
     <div class="form-check">
-        <input class="form-check-input" type="radio" name="Form_type" id="flexRadioDefault1" value="{{form}}">
+        <input class="form-check-input" type="radio" name="Form_type" id="flexRadioDefault1" value="{{table_name}}">
         <label class="form-check-label" for="flexRadioDefault1">
             <!-- {{form}} -->
-            {{session.forms[form]}}
+            {{session.forms[table_name]}}
         </label>
     </div>
   {% endfor %}
