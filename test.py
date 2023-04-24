@@ -24,7 +24,7 @@ sender_password = "fgbboncngfheozws"
 mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="Vasisht@27",
+        password="1234",
         database="test"
         )
 cursor = mydb.cursor()
@@ -47,6 +47,7 @@ def login():
             query = 'SELECT * FROM studentlogin WHERE email = %s AND password = %s'
             cursor.execute(query, (email, password))
             user_account = cursor.fetchone()
+            print(user_account)
             homepage='studenthomepage.html'
         elif user=='Admin':
             query='SELECT * FROM adminlogin WHERE email = % s AND password = % s'
@@ -464,6 +465,8 @@ def approve(form_id,approvelevel):
 @app.route('/submitted_forms')
 def submitted_forms():
     #getting all the forms submitted by him from submitted forms table.
+    if session['loggedin']==False:
+        return redirect(url_for('login'))
     query = 'SELECT * from submittedforms WHERE rollno = %s'
     values = [session['rollno']]
     cursor.execute(query,values)
