@@ -24,8 +24,8 @@ sender_password = "fgbboncngfheozws"
 mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="2312",
-        database="SWE"
+        password="Vasisht@27",
+        database="test"
         )
 cursor = mydb.cursor()
 
@@ -57,6 +57,7 @@ def login():
             session['loggedin'] = True
             session['id'] = user_account[0]
             session['email'] = user_account[3]
+            session['rollno'] = user_account[4]
             message = 'Logged in successfully !'
             return render_template(homepage, message = message)
         else:
@@ -460,6 +461,44 @@ def approve(form_id,approvelevel):
     return "already responded"
     
 
+@app.route('/submitted_forms')
+def submitted_forms():
+    #getting all the forms submitted by him from submitted forms table.
+    query = 'SELECT * from submittedforms WHERE rollno = %s'
+    values = [session['rollno']]
+    cursor.execute(query,values)
+    records = cursor.fetchall()
+    # len = len(records)
+    dict_status = {
+        '0' : 'pending',
+        '1' : 'accepted',
+        '2' :'rejected'
+    }
+    return render_template("history.html",records = records,dict_status = dict_status)
+
+@app.route('/expanded_history/<form_id>/<form_type>')
+def expanded_history(form_id,form_type):
+    dict_form_type = {
+        '1' : 'additionalcourseconversion'
+    }
+    query = 'SELECT * from ' +dict_form_type[form_type]+' WHERE id = %s'
+    values = [form_id]
+    cursor.execute(query,values)
+    row = [dict(line) for line in [zip([column[0] for column in cursor.description],row) for row in cursor.fetchall()]]
+    #finding status
+    query = "SELECT status from submittedforms where id = %s"
+    values = [form_id]
+    cursor.execute(query,values)
+    status = cursor.fetchone()
+    status = int(status[-1])
+    #finding who accepted and who rejected
+    '''
+    if status is rejected then till approver level everyone accepted
+    if status is accepted then everyone accepted
+    if status is pending then everyone till approver level accepted remaining pending
+    '''
+    approve_level = int(row[0]['approvelevel'])
+    return render_template("expanded.html",row = row[0],status = status,approve_level = approve_level)
 
 
 if __name__=="__main__":

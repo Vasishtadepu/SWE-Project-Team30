@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostriy</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">          
+</head>
+<body></br></br></br></br></br>
+   <div  class="form">
+    <div class="formheading">
+   </h1>Additional Course Conversion Form</h1>
+</div></br></br></br></br>
+</h2>
+    <table border=2>
+        {% for key,value in row.items() %}
+        <tr>
+            <th>{{ key }}</th>
+            <th>{{ value }}</th>
+        </tr>
+        {% endfor %}
+    </table>
+    <table border=2>
+        {% for i in range(approve_level) %}
+        <tr>
+            <th>approver{{i+1}}</th>
+            <th>approved</th>
+        </tr>
+        {% endfor %}
+        {%if status == 0 %}
+        <tr>
+            <th>approver{{approve_level+1}}</th>
+            <th>Pending</th>
+        </tr>
+        {%endif%}
+        {%if status == 2%}
+        <tr>
+            <th>approver{{approve_level+1}}</th>
+            <th>Rejected</th>
+        </tr>
+        {% endif %}
+    </table>
+</h2>
+
+   </div>
+</body>
+</html>
