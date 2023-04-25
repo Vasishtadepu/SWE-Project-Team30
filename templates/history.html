@@ -1,15 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Additional Course Conversion Form</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">          
-</head>
-<body>
-    <table class ='column-bordered-table'>
-        <tr>
+<!-- entends base.html -->
+{% extends 'base.html' %}
+{% block app %}
+
+<div class="container main-block">
+    <table class ='table table-striped'>
+        <thead>
+            <tr>
+              <th scope="col">Form Id</th>
+              <th scope="col">Form Type</th>
+              <th scope="col">Status</th>
+              <th scope="col">Expand</th>
+            </tr>
+          </thead>
+          <tbody>
+            {%for row in records%}
+            <tr>
+              <th scope="row">{{row[0]}}</th>
+              <td>{{row[1]}}</td>
+              <td>{{dict_status[row[3]]}}</td>
+              <td><a href="http://127.0.0.1:5000/expanded_history/{{row[0]}}/{{row[1]}}">Expand</a></td>
+            </tr>
+            {%endfor%}
+          </tbody>
+        <!-- <tr>
             <th>Form Id</th>
             <th>Form Type</th>
             <th>Status</th>
@@ -23,8 +36,10 @@
             <td><a href="http://127.0.0.1:5000/expanded_history/{{row[0]}}/{{row[1]}}">Expand</a></td>
             <br>
         </tr>
-        {%endfor%}
+        {%endfor%} -->
     </table>
-</body>
+</div>
+{% endblock %}
+
 
 

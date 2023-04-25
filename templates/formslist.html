@@ -41,6 +41,7 @@
     {{message}}
 </div>
 {% endif %}
+<div class="container main-block">
 <form action="\create_instance" method="POST">
   {% for table_name in session.forms %}
     <div class="form-check">
@@ -55,4 +56,5 @@
         <button type="submit" class="btn btn-primary">Create Form</button>
     </div>
 </form>
+</div>
 {% endblock %}
