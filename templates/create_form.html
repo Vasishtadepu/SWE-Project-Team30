@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="{{url_for('static', filename='script.js')}}"></script>
+    <title>Document</title>
+</head>
+<body>
+    <button onclick="increase_text()" id = "increase_text">Increase Text Fields</button>
+    <button onclick = "remove_text()" >Remover a text field</button>
+    <button onclick = "increase_approver()" id = 'increase_approver'>Increase approver fields</button>
+    <button onclick = "decrease_approver()">Decrease Approver Fields</button>
+    <div class="form">
+        <form action="\some_backend" method="post">
+            <div id="student_details"></div>
+            <p>Approver Details go Here</p>
+            <div id="approver_details"></div>
+        </form>
+    </div>
+</body>
+</html>
