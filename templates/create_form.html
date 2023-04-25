@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -20,4 +20,17 @@
         </form>
     </div>
 </body>
-</html>
+</html> -->
+
+{% extends "base.html" %}
+{% block app %}
+    <button onclick="increase_text()" id = "increase_text">Increase Text Fields</button>
+    <button onclick = "remove_text()" >Remover a text field</button>
+    <button onclick = "increase_approver()" id = 'increase_approver'>Increase approver fields</button>
+    <button onclick = "decrease_approver()">Decrease Approver Fields</button>
+<form action="\create_form" method="post">
+    <div id = "student_details"></div>
+    <p>Approver details go here</p>
+    <div id = 'approver_details'></div>
+</form>
+{% endblock %}

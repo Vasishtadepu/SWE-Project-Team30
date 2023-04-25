@@ -18,14 +18,17 @@ function increase_text(){
     const field = document.createElement("input")
     field.setAttribute("type","text")
     field.setAttribute("name",name_current)
+    field.style.display = "block"
     console.log(name_current)
     mom.appendChild(field)
+
 }
 
 function remove_text(){
     const mom = document.getElementById('student_details')
     last_child = mom.lastElementChild
     mom.removeChild(last_child)
+
 }
 
 function increase_approver(){
@@ -48,6 +51,7 @@ function increase_approver(){
     const field = document.createElement("input")
     field.setAttribute("type","text")
     field.setAttribute("name",name_current)
+    field.style.display = "block"
     console.log(name_current)
     mom.appendChild(field)
 }

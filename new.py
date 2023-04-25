@@ -22,8 +22,8 @@ sender_password = "fgbboncngfheozws"
 mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="1234",
-        database="test"
+        password="Vasisht@27",
+        database="test2"
         )
 cursor = mydb.cursor()
 
@@ -56,12 +56,16 @@ def login():
             cursor.execute(query, (email, password))
             user_account = cursor.fetchone()
             homepage='studenthomepage.html'
+            session['type'] = "Student"
         elif user=='Admin':
-            query='SELECT * FROM adminlogin WHERE email = % s AND password = % s'
+            query='SELECT * FROM adminlogin WHERE email = %s AND password = %s'
             cursor.execute(query, (email, password))
             user_account = cursor.fetchone()
             homepage='adminhomepage.html'
-        if user_account:
+            session['type'] = "Admin"
+            session['loggedin'] = True
+            return render_template(homepage,message = "Hello admin")
+        if user_account and session['type'] == "Student":
             session['loggedin'] = True
             session['id'] = user_account[0]
             session['name'] = user_account[1]
@@ -308,6 +312,29 @@ def submitted_forms():
     }
     return render_template("history.html",records = records,dict_status = dict_status)
 
+@app.route('/expanded_history/<form_id>/<form_type>')
+def expanded_history(form_id,form_type):
+    dict_form_type = {
+        '1' : 'additionalcourseconversion'
+    }
+    query = 'SELECT * from ' +form_type+' WHERE id = %s'
+    values = [form_id]
+    cursor.execute(query,values)
+    row = [dict(line) for line in [zip([column[0] for column in cursor.description],row) for row in cursor.fetchall()]]
+    #finding status
+    query = "SELECT status from submittedforms where id = %s"
+    values = [form_id]
+    cursor.execute(query,values)
+    status = cursor.fetchone()
+    status = int(status[-1])
+    #finding who accepted and who rejected
+    '''
+    if status is rejected then till approver level everyone accepted
+    if status is accepted then everyone accepted
+    if status is pending then everyone till approver level accepted remaining pending
+    '''
+    approve_level = int(row[0]['approvelevel'])
+    return render_template("expanded.html",row = row[0],status = status,approve_level = approve_level)
 
 @app.route('/approve/<form_id>/<approvelevel>')
 def approve(form_id,approvelevel):
@@ -329,7 +356,9 @@ def approve(form_id,approvelevel):
         return render_template('approve.html',form_id=form_id,approvelevel=approvelevel)
     return "already responded"
     
-
+@app.route('/create_form')
+def create_form():
+    return render_template('create_form.html')
 
 if __name__=="__main__":
     app.run(debug=True)
