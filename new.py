@@ -157,13 +157,13 @@ def save_instance():
     form_name=get_forms()[table_name]
     #Now we push the submitted form into submitted_forms table.
     query1 = 'INSERT INTO submittedforms (formtype,rollno,status) VALUES (%s,%s,%s)'
-    values1 = [table_name,request.form['rollno'],'0']
+    values1 = [table_name,request.form['Roll_No'],'0']
     cursor.execute(query1,values1)
     mydb.commit()
 
     #Now we get the id from the form_table
     query2 = 'SELECT * from submittedforms where rollno = %s and formtype = %s'
-    values2 = (request.form['rollno'],request.form['table_name'])
+    values2 = (request.form['Roll_No'],request.form['table_name'])
     cursor.execute(query2,values2)
     records = cursor.fetchall()
     row = records[-1]
@@ -294,8 +294,29 @@ def update_instance():
     return ret
 
     
+@app.route('/approve/<form_id>/<approvelevel>')
+def approve(form_id,approvelevel):
+    query1 = 'SELECT * from submittedforms where id=%s'
+    values1 = [int(form_id)]
+    cursor.execute(query1,values1)
+    records = cursor.fetchall()
+    row = records[-1]
+    status=row[-1]
+    table=row[1]
+    query = 'SELECT * from '+table+' where id=%s'
+    values = [int(form_id)]
+    cursor.execute(query,values)
+    records = cursor.fetchall()
+    row = records[-1]
+    current_approvelevel = row[-1]
+    print(type(current_approvelevel),type(approvelevel))
+    if current_approvelevel==approvelevel and status!='2':
+        return render_template('approve.html',form_id=form_id,approvelevel=approvelevel)
+    return "already responded"
 
+#Functions which handle history part of the code.
 
+#Function which gives basic detail about the history.
 @app.route('/submitted_forms')
 def submitted_forms():
     #getting all the forms submitted by him from submitted forms table.
@@ -312,6 +333,7 @@ def submitted_forms():
     }
     return render_template("history.html",records = records,dict_status = dict_status)
 
+#Function which gives detailed info about the form.
 @app.route('/expanded_history/<form_id>/<form_type>')
 def expanded_history(form_id,form_type):
     dict_form_type = {
@@ -336,29 +358,53 @@ def expanded_history(form_id,form_type):
     approve_level = int(row[0]['approvelevel'])
     return render_template("expanded.html",row = row[0],status = status,approve_level = approve_level)
 
-@app.route('/approve/<form_id>/<approvelevel>')
-def approve(form_id,approvelevel):
-    query1 = 'SELECT * from submittedforms where id=%s'
-    values1 = [int(form_id)]
-    cursor.execute(query1,values1)
-    records = cursor.fetchall()
-    row = records[-1]
-    status=row[-1]
-    table=row[1]
-    query = 'SELECT * from '+table+' where id=%s'
-    values = [int(form_id)]
-    cursor.execute(query,values)
-    records = cursor.fetchall()
-    row = records[-1]
-    current_approvelevel = row[-1]
-    print(type(current_approvelevel),type(approvelevel))
-    if current_approvelevel==approvelevel and status!='2':
-        return render_template('approve.html',form_id=form_id,approvelevel=approvelevel)
-    return "already responded"
-    
+
+'''This region handles all the functions related creating a new type of form.'''
 @app.route('/create_form')
 def create_form():
     return render_template('create_form.html')
+
+#This route handles the adding of the form into the table.
+@app.route('/add_form',methods = ['GET','POST'])
+def add_form():
+    #First we get the form name and the number of approvers.
+    #To push into the forms_table.
+    form_name = request.form['form_name']
+    table_name = request.form['form_name'].replace(' ','_')
+    keys_list = list(request.form.keys())
+    no_of_approvers = 0
+    for i in keys_list:
+        if i[0] == "A":
+            no_of_approvers = no_of_approvers + 1
+    #now we need to push into forms_table
+    query = "INSERT INTO forms_table values (%s,%s,%s)"
+    values = [form_name,table_name,str(no_of_approvers)]
+    cursor.execute(query,values)
+    mydb.commit()
+    
+    #Now we need to add the table into the database
+    #first we remove spaces from the coloumn_names
+    col_names = ['id']
+    col_data_type = ['INT(11)']
+    for key in keys_list:
+        if key == 'form_name':
+            continue
+        col_names.append(request.form[key].replace(' ','_'))
+        col_data_type.append('VARCHAR(100)')
+    col_names.append('approvelevel')
+    col_data_type.append('VARCHAR(50)')
+    print(col_names)
+    create_stement='create table '+table_name + '('
+    i=0
+    while i< len(col_names)-1 :
+        create_stement =create_stement +col_names[i] +'  '+col_data_type[i]+' ,'
+        i=i+1
+
+    create_stement =create_stement +col_names[i] +'  '+col_data_type[i]+' )'
+    print(create_stement)
+    cursor.execute(create_stement)
+    mydb.commit()
+    return "Form added"
 
 if __name__=="__main__":
     app.run(debug=True)

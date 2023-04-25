@@ -39,14 +39,14 @@ function increase_approver(){
     if (last_child!=null)
     {
         const name_last = last_child.getAttribute("name")
-        let num = Number(name_last.slice(7))
+        let num = Number(name_last.slice(8))
         num++
         console.log(num)
-        name_current = "Student" + num.toString()
+        name_current = "Approver" + num.toString()
     }
     else if (last_child==null)
     {
-        name_current = "Student1"
+        name_current = "Approver1"
     }
     const field = document.createElement("input")
     field.setAttribute("type","text")
