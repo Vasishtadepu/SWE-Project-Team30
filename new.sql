@@ -43,10 +43,10 @@ CREATE TABLE IF NOT EXISTS `additionalcourseconversion`
     `coursenumber2` varchar(50) NOT NULL,
     `credits2` varchar(50) NOT NULL,
     `semester2` varchar(50) NOT NULL,
-    `approver1` varchar(50) NOT NULL,
-    `approver2` varchar(50) NOT NULL,
-    `approver3` varchar(50) NOT NULL,
-    `approver4` varchar(50) NOT NULL,
+    `Guide_mail` varchar(50) NOT NULL,
+    `HoD_mail` varchar(50) NOT NULL,
+    `Registrar_mail` varchar(50) NOT NULL,
+    `Dean_mail` varchar(50) NOT NULL,
     `approvelevel` varchar(50) NOT NULL,
     PRIMARY KEY(id)
 
@@ -64,9 +64,9 @@ CREATE TABLE IF NOT EXISTS `leaveform`
     `noofdays` varchar(11) NOT NULL,
     `reason` varchar(50) NOT NULL,
     `phone` varchar(50) NOT NULL,
-    `approver1` varchar(50) NOT NULL,
-    `approver2` varchar(50) NOT NULL,
-    `approver3` varchar(50) NOT NULL,
+    `Guide_mail` varchar(50) NOT NULL,
+    `HoD_mail` varchar(50) NOT NULL,
+    `Dealing_Assistant_Mail` varchar(50) NOT NULL,
     `approvelevel` varchar(50) NOT NULL,
     PRIMARY KEY(id)
 

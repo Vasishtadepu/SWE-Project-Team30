@@ -22,7 +22,7 @@ sender_password = "fgbboncngfheozws"
 mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="Vasisht@27",
+        password="2312",
         database="test2"
         )
 cursor = mydb.cursor()
@@ -185,10 +185,17 @@ def save_instance():
     print(values)
     cursor.execute(query3,values)
     mydb.commit()
+    #finding number of approvers
+    query4= 'SELECT * from forms_table where table_name=%s'
+    values4=[table_name]
+    cursor.execute(query4,values4)
+    row = cursor.fetchone()
+    no_of_approvers=int(row[-1])
+    approver=col_names[-no_of_approvers-1]
     msg = Message(
         form_name+" Form Approval",
         sender = sender_mail,
-        recipients= [request.form['approver1']])
+        recipients= [request.form[approver]])
     msg.html=render_template('template1.html',details=request.form,form_id=form_id,approvelevel=0)
     mail.send(msg)
     return render_template('studenthomepage.html', message ='mail sent to first approver')
@@ -211,7 +218,7 @@ def update_instance():
     records = cursor.fetchall()
     row = records[-1]
     form_name=row[0]
-    max_approvelevel=row[-1]
+    no_of_approvers=row[-1]
     #if approver rejects form
     if action=='2':
         #update submittedforms table that form is rejected
@@ -243,7 +250,7 @@ def update_instance():
         cursor.execute(query1,values1)
         mydb.commit()
         print(approvelevel)
-        if approvelevel>=int(max_approvelevel):
+        if approvelevel>=int(no_of_approvers):
                  #update submittedforms table that form is approved
                  query2 = 'UPDATE submittedforms SET status=%s WHERE id=%s'
                  values2 = (action,int(form_id))
@@ -262,8 +269,14 @@ def update_instance():
                  values = [int(form_id)]
                  cursor.execute(query,values)
                  req_dict = [dict(line) for line in [zip([column[0] for column in cursor.description],row) for row in cursor.fetchall()]]
+                 #find number of approvers
+                 #now we have table name we need to find the coloumns.
+                 query = 'SELECT * from ' + table_name
+                 cursor.execute(query)
+                 records = cursor.fetchall()
+                 col_names = [i[0] for i in cursor.description]
+                 approver=col_names[-int(no_of_approvers)-1+approvelevel]
                  #send mail to next approver
-                 approver='approver'+str(approvelevel)
                  approver_mail = req_dict[0][approver]
                  msg = Message(form_name+" Form Approval",
                                sender = sender_mail,
