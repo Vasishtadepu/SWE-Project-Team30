@@ -22,7 +22,7 @@ sender_password = "fgbboncngfheozws"
 mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="Vasisht@27",
+        password="2312",
         database="test2"
         )
 cursor = mydb.cursor()
@@ -112,8 +112,11 @@ def homepage():
     # print("Here")
     if session['loggedin']==False:
         return redirect(url_for('login', message='Please login to continue !'))
-    if session['id'] and session['email']:
+    if session['type'] == 'Admin':
+        return render_template('adminhomepage.html',message = "Hello admin")
+    elif session['id'] and session['email']:
         return render_template('studenthomepage.html')
+    
     else:
         return redirect(url_for('login'))
 
@@ -392,8 +395,8 @@ def add_form():
         col_names.append(request.form[key].replace(' ','_'))
         col_data_type.append('VARCHAR(100)')
     col_names.append('approvelevel')
-    col_data_type.append('VARCHAR(50)')
-    print(col_names)
+    col_data_type.append('VARCHAR(150)')
+    # print(col_names)
     create_stement='create table '+table_name + '('
     i=0
     while i< len(col_names)-1 :
@@ -402,9 +405,10 @@ def add_form():
 
     create_stement =create_stement +col_names[i] +'  '+col_data_type[i]+' )'
     print(create_stement)
+    print(len(create_stement))
     cursor.execute(create_stement)
     mydb.commit()
-    return "Form added"
+    return render_template('adminhomepage.html',message = "Form Added")
 
 if __name__=="__main__":
     app.run(debug=True)

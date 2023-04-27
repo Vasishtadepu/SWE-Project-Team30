@@ -1,20 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Additional Course Conversion Form</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">          
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block app %}
     <form action="\save_instance" method="post">
         <input type="hidden" name="table_name" value = {{table_name}}>
         {% for field in col_names%}
-        <label for={{field}}>{{ field }}</label>
+        <label for={{field}}>{{ field.replace('_',' ') }}</label>
         <input type="text" name={{field}}>
         <br>
         {%endfor%}
         <input type="submit" value="Submit">
     </form>
-</body>
+{% endblock %}l>

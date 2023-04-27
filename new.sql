@@ -30,49 +30,6 @@ CREATE TABLE IF NOT EXISTS `submittedforms`
 
 );
 
-CREATE TABLE IF NOT EXISTS `additionalcourseconversion`
-(
-    `id` int(11) NOT NULL,
-    `name` varchar(50) NOT NULL,
-    `rollno` varchar(50) NOT NULL,
-    `course1` varchar(50) NOT NULL,
-    `coursenumber1` varchar(50) NOT NULL,
-    `credits1` varchar(50) NOT NULL,
-    `semester1` varchar(50) NOT NULL,
-    `course2` varchar(50) NOT NULL,
-    `coursenumber2` varchar(50) NOT NULL,
-    `credits2` varchar(50) NOT NULL,
-    `semester2` varchar(50) NOT NULL,
-    `Guide_mail` varchar(50) NOT NULL,
-    `HoD_mail` varchar(50) NOT NULL,
-    `Registrar_mail` varchar(50) NOT NULL,
-    `Dean_mail` varchar(50) NOT NULL,
-    `approvelevel` varchar(50) NOT NULL,
-    PRIMARY KEY(id)
-
-);
-
-
-CREATE TABLE IF NOT EXISTS `leaveform`
-(
-    `id` int(11) NOT NULL,
-    `name` varchar(50) NOT NULL,
-    `rollno` varchar(50) NOT NULL,
-    `semester` varchar(11) NOT NULL,
-    `leavefrom` varchar(50) NOT NULL,
-    `leaveto` varchar(50) NOT NULL,
-    `noofdays` varchar(11) NOT NULL,
-    `reason` varchar(50) NOT NULL,
-    `phone` varchar(50) NOT NULL,
-    `Guide_mail` varchar(50) NOT NULL,
-    `HoD_mail` varchar(50) NOT NULL,
-    `Dealing_Assistant_Mail` varchar(50) NOT NULL,
-    `approvelevel` varchar(50) NOT NULL,
-    PRIMARY KEY(id)
-
-);
-
-
 
 
 INSERT INTO studentlogin(name,password,email,rollno,department) VALUES ('Manaswini','2312','cs20btech11035@iith.ac.in','CS20BTECH11035','CSE');
@@ -88,5 +45,3 @@ CREATE TABLE IF NOT EXISTS `forms_table`
     `no_of_approvers` varchar(100) NOT NULL
 );
 
-INSERT INTO forms_table(form_name,table_name,no_of_approvers)  VALUES ('Additional Course Conversion','additionalcourseconversion','4');
-INSERT INTO forms_table(form_name,table_name,no_of_approvers) VALUES('Leave form', 'leaveform','3');
