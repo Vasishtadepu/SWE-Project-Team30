@@ -22,8 +22,8 @@ sender_password = "fgbboncngfheozws"
 mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="1234",
-        database="test"
+        password="2312",
+        database="test2"
         )
 cursor = mydb.cursor()
 
@@ -63,9 +63,13 @@ def login():
             user_account = cursor.fetchone()
             homepage='adminhomepage.html'
             session['type'] = "Admin"
+        if user_account and session['type'] == "Admin":
             session['loggedin'] = True
+            session['id']=user_account[0]
+            session['name'] = user_account[1]
+            session['email'] = user_account[3]
             return render_template(homepage,message = "Hello admin")
-        if user_account and session['type'] == "Student":
+        elif user_account and session['type'] == "Student":
             session['loggedin'] = True
             session['id'] = user_account[0]
             session['name'] = user_account[1]
