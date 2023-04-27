@@ -30,18 +30,43 @@
     <div align="center">
         <div class="homepageheading">
             {%if message%}
-            <div class="alert alert-primary" role="alert">
+            <div class="alert alert-success" role="alert">
               {{message}}
             </div>
+        </div>
 {% endif %}
-            <h1 class="bottom">
-                Hi {{session.email}}!!</br></br> Welcome to the home page...				
-            </h1></br></br></br>
-        </div> 
-    <div class="homeoptions">
+<div class="container main-block">
+    
+    <!-- Printing the Students details -->
+    <table class="table table-striped">
+        <tbody>
+          <tr>
+            <th scope="row"></th>
+            <td>Name</td>
+            <td>{{session['name']}}</td>
+            </tr>
+            <tr>
+            <th scope="row"></th>
+            <td>Email</td>
+            <td>{{session['email']}}</td>
+            </tr>
+            <tr>
+            <th scope="row"></th>
+            <td>Roll No</td>
+            <td>{{session['rollno']}}</td>
+            </tr>
+            <tr>
+            <th scope="row"></th>
+            <td>Department</td>
+            <td>{{session['department']}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+    <!-- <div class="homeoptions">
         <a href="{{ url_for('formlist') }}" class="homebtn">Submit a new form</a></br></br></br>
         <a href="{{ url_for('submitted_forms') }}" class="homebtn">Submitted forms history</a></br></br></br>
-        <!-- <a href="{{ url_for('logout') }}" class="homebtn">Logout</a> -->
-    </div>
+    </div> -->
+</div>
 
 {% endblock %}

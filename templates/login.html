@@ -42,11 +42,10 @@
 </div>
 {% endif %}
 
-<form action="\login" method="POST">
+<!-- <form action="\login" method="POST">
     <div class="mb-3">
       <label for="exampleInputEmail1" class="form-label">Email address</label>
       <input type="email" class="form-control" id="exampleInputEmail1" name="email">
-      <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
     </div>
     <div class="mb-3">
       <label for="exampleInputPassword1" class="form-label">Password</label>
@@ -61,6 +60,38 @@
     <div class="col-auto">
         <button type="submit" class="btn btn-primary">Sign In</button>
     </div>
-</form>
+</form> -->
+<!-- <img src="{{url_for('static', filename='bg.jpg')}}" -->
+<!-- Adding background image using jinja and flask -->
+
+<!-- <style>
+	  body {
+	background-image: url("{{url_for('static', filename='bg.jpeg')}}");
+	background-repeat: no-repeat;
+	background-size: cover;
+  }
+</style> -->
+
+<div class="form-box">
+	<form class="form", action="\login" method="POST">
+		<span class="title">Login</span>
+		<!-- <span class="subtitle">Create a free account with your email.</span> -->
+		<div class="form-container">
+		  <!-- <input type="text" class="input" placeholder="Full Name"> -->
+				<input type="email" class="input" placeholder="Email" name="email">
+				<input type="password" class="input" placeholder="Password" name="password">
+		</div>
+		<div>
+			<select class="form-select" aria-label="Default select example" name="user">
+				<option value="Student" selected>Student</option>
+				<option value="Admin">Admin</option>
+			</select>
+		</div>
+		<button>Login</button>
+	</form>
+	<div class="form-section">
+	  <p>Don't Have an account? <a href="{{url_for('register')}}">Register</a> </p>
+	</div>
+	</div>
 
 {% endblock %}

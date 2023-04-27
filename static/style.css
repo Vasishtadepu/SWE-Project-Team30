@@ -56,7 +56,7 @@
 
  body {
     /* background-image: url({{ url_for('static', filename='bg.jpg') }}); */
-    background: #fafafa;
+    background: #feffff;
     color: #333333;
     margin-top: 5rem;
   }
@@ -70,20 +70,24 @@
     color: #444444;
   }
   
+  h1{
+    text-align: center;
+  }
+
   ul {
     margin: 0;
   }
   
   .bg-steel {
-    background-color: #ffa73c;
+    background-color: #17252a;
   }
   
   .site-header .navbar-nav .nav-link {
-    color: #000000;
+    color: #ffffff;
   }
   
   .site-header .navbar-nav .nav-link:hover {
-    color: #ffffff;
+    color: #f4976c;
   }
   
   .site-header .navbar-nav .nav-link.active {
@@ -146,8 +150,8 @@
   }
 
   .form-box {
-    max-width: 400px !important;
-    background: #f1f7fe;
+    max-width: 70% !important;
+    background: #def2f1;
     overflow: hidden;
     border-radius: 16px;
     color: #010101;
@@ -174,6 +178,8 @@
   .title {
     font-weight: bold;
     font-size: 1.6rem;
+    padding-top: 1%;
+    padding-bottom: 1%;
   }
   
   .subtitle {
@@ -204,7 +210,7 @@
   .form-section {
     padding: 16px;
     font-size: .85rem;
-    background-color: #e0ecfb;
+    background-color: #3aafa9;
     box-shadow: rgb(0 0 0 / 8%) 0 -1px;
   }
   
@@ -221,7 +227,7 @@
   
   /*Button*/
   .form button {
-    background-color: #0066ff;
+    background-color: #2b7a78;
     color: #fff;
     border: 0;
     border-radius: 24px;
@@ -233,7 +239,7 @@
   }
   
   .form button:hover {
-    background-color: #005ce6;
+    background-color: #2b7a78;
   }
 
   .form-select{
@@ -248,8 +254,8 @@
   }
 
 .main-block{
-  max-width: 70% !important;
-  background: #f1f7fe;
+  max-width: 95% !important;
+  background: #def2f1;
   overflow: hidden;
   border-radius: 15px;
   color: #010101;

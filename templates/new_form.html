@@ -1,13 +1,16 @@
-{% extends "base.html" %}
 
+{% extends "base.html" %}
 {% block app %}
+<div class="container main-block">
+    <h1>{{table_name.capitalize()}} Form</h1>
     <form action="\save_instance" method="post">
         <input type="hidden" name="table_name" value = {{table_name}}>
         {% for field in col_names%}
-        <label for={{field}}>{{ field.replace('_',' ') }}</label>
-        <input type="text" name={{field}}>
+        <label for={{field}} class="form-label">{{ field.replace('_',' ').capitalize() }}</label>
+        <input type="text" name={{field}} class="form-control">
         <br>
         {%endfor%}
-        <input type="submit" value="Submit">
+        <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-{% endblock %}l>
+</div>
+{% endblock %}

@@ -2,7 +2,7 @@
 
 {% extends "base.html" %}
 {% block app %}
-<form action="\register" method="POST">
+<!-- <form action="\register" method="POST">
     <p>{{message}}</p>
     <div class="mb-3">
         <label for="exampleInputEmail1" class="form-label">Email address</label>
@@ -27,5 +27,27 @@
     <div class="col-auto">
         <button type="submit" class="btn btn-primary">Sign Up</button>
     </div>
-</form>
+</form> -->
+
+
+
+<div class="form-box">
+  <form class="form", action="\register" method="POST">
+      <span class="title">Register</span>
+      <span class="subtitle">Create an account with your email.</span>
+      <div class="form-container">
+        <input type="text" class="input" placeholder="Full Name" name="username">
+              <input type="email" class="input" placeholder="Email" name="email">
+              <input type="password" class="input" placeholder="Password" name="password">
+              <input type="text" class="input" placeholder="Roll Number" name="rollno">
+                <input type="text" class="input" placeholder="Department" name="department">
+                 
+
+      </div>
+      <button>Sign up</button>
+  </form>
+  <div class="form-section">
+    <p>Have an account? <a href="{{url_for('login')}}">Log in</a> </p>
+  </div>
+  </div>
 {% endblock %}

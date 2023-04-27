@@ -6,6 +6,8 @@ from wtforms import StringField, validators, PasswordField, SubmitField,HiddenFi
 from wtforms.validators import DataRequired, Email
 from flask_wtf.file import FileField, FileRequired
 from flask_bootstrap import Bootstrap
+from markupsafe import Markup
+
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -134,7 +136,7 @@ class AdditionalCourseConversionFormdetails(FlaskForm):
     HoDmail = StringField(label='HoDmail', validators=[DataRequired(), Email(granular_message=True)])
     Registrarmail = StringField(label='Registrarmail', validators=[DataRequired(), Email(granular_message=True)])
     Deanmail = StringField(label='Deanmail', validators=[DataRequired(), Email(granular_message=True)])
-    submit = SubmitField(label="submit")
+    # submit = SubmitField(label="submit")
 
 
 class AdditionalCourseConversionForm:
@@ -275,7 +277,7 @@ class LeaveFormdetails(FlaskForm):
     Guidemail = StringField(label='Guidemail', validators=[DataRequired(), Email(granular_message=True)])
     HoDmail = StringField(label='HoDmail', validators=[DataRequired(), Email(granular_message=True)])
     DAmail = StringField(label='DAmail', validators=[DataRequired(), Email(granular_message=True)])
-    submit = SubmitField(label="submit")
+    # submit = SubmitField(label="submit")
 
 class LeaveForm:
 
