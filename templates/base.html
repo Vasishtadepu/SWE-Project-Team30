@@ -80,7 +80,11 @@
             <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="navbar-nav mr-auto">
                 <a class="nav-item nav-link" href="{{url_for('homepage')}}">Home</a>
+                {% if session['type'] == 'Admin' %}
+                <a class="nav-item nav-link" href="{{url_for('create_form')}}">Create Form</a>
+                {% else %}
                 <a class="nav-item nav-link" href="{{url_for('formlist')}}">New Form</a>
+                {% endif %}
                 <a class="nav-item nav-link" href="{{url_for('submitted_forms')}}">Submitted Forms</a>
             </div>
             <!-- Navbar Right Side -->

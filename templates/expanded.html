@@ -1,48 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hostriy</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">          
-</head>
-<body></br></br></br></br></br>
-   <div  class="form">
-    <div class="formheading">
-   </h1>Additional Course Conversion Form</h1>
-</div></br></br></br></br>
-</h2>
-    <table border=2>
+{% extends 'base.html' %}
+{% block app %}
+<div class="container main-block">
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Key</th>
+        <th scope="col">Details Filled</th>
+      </tr>
+    </thead>
+    <tbody>
         {% for key,value in row.items() %}
-        <tr>
-            <th>{{ key }}</th>
-            <th>{{ value }}</th>
-        </tr>
+            <tr>
+                <td>{{key.capitalize()}}</td>
+                <td>{{value}}</td>
+            </tr>
         {% endfor %}
-    </table>
-    <table border=2>
+    </tbody>
+  </table>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Approver</th>
+        <th scope="col">Status</th>
+      </tr>
+    </thead>
+    <tbody>
         {% for i in range(approve_level) %}
-        <tr>
-            <th>approver{{i+1}}</th>
-            <th>approved</th>
-        </tr>
+            <tr>
+                <td>Approver {{i+1}}</td>
+                <td>Approved</td>
+            </tr>
         {% endfor %}
         {%if status == 0 %}
         <tr>
-            <th>approver{{approve_level+1}}</th>
-            <th>Pending</th>
+            <td>Approver {{approve_level+1}}</td>
+            <td>Pending</td>
         </tr>
         {%endif%}
         {%if status == 2%}
         <tr>
-            <th>approver{{approve_level+1}}</th>
-            <th>Rejected</th>
+            <td>approver{{approve_level+1}}</td>
+            <td>Rejected</td>
         </tr>
         {% endif %}
-    </table>
-</h2>
+    </tbody>
+  </table>
+  
 
-   </div>
-</body>
-</html>
+</div>  
+{% endblock %}

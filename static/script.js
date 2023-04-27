@@ -18,6 +18,7 @@ function increase_text(){
     const field = document.createElement("input")
     field.setAttribute("type","text")
     field.setAttribute("name",name_current)
+    field.setAttribute("class","form-control")
     field.style.display = "block"
     console.log(name_current)
     mom.appendChild(field)
@@ -51,6 +52,7 @@ function increase_approver(){
     const field = document.createElement("input")
     field.setAttribute("type","text")
     field.setAttribute("name",name_current)
+    field.setAttribute("class","form-control")
     field.style.display = "block"
     console.log(name_current)
     mom.appendChild(field)

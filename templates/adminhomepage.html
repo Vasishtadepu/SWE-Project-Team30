@@ -34,13 +34,20 @@
               {{message}}
             </div>
 {% endif %}
+        <div class="main-block">
             <h1 class="bottom">
                 Hi {{session.email}}!!</br></br> Welcome to the home page...				
             </h1></br></br></br>
-        </div> 
-    <div class="homeoptions">
-        <a href="{{ url_for('submitted_forms') }}" class="homebtn">Submitted forms history</a></br></br></br>
-        <a href="{{ url_for('create_form') }}" class="homebtn">Create New Form</a>
+            <div class="btn-group" role="group" aria-label="Basic outlined example">
+                <a href="{{url_for('submitted_forms')}}" class="btn btn-outline-primary">Submitted Forms History</a>
+                <a href="{{url_for('create_form')}}" class="btn btn-outline-primary"> Create New Form </a>
+            </div>
+            <!-- <a href="{{url_for('submitted_forms')}}" class="btn btn-primary">Submitted Forms History</a>
+            <a href="{{url_for('create_form')}}" class="list-group-item list-group-item-action">Create New Form</a>
+        <div class="homeoptions">
+            <a href="{{ url_for('submitted_forms') }}" class="homebtn">Submitted forms history</a></br></br></br>
+            <a href="{{ url_for('create_form') }}" class="homebtn">Create New Form</a>
+        </div> -->
     </div>
 
 {% endblock %}

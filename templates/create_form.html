@@ -24,19 +24,21 @@
 
 {% extends "base.html" %}
 {% block app %}
-    <button onclick="increase_text()" id = "increase_text">Increase Text Fields</button>
-    <button onclick = "remove_text()" >Remover a text field</button>
-    <button onclick = "increase_approver()" id = 'increase_approver'>Increase approver fields</button>
-    <button onclick = "decrease_approver()">Decrease Approver Fields</button>
+<div class="main-block">
+    <button class="btn btn-primary" onclick="increase_text()" id = "increase_text">Increase Text Fields</button>
+    <button class="btn btn-primary" onclick = "remove_text()" >Remover a text field</button>
+    <button onclick = "increase_approver()" id = 'increase_approver' class="btn btn-primary">Increase approver fields</button>
+    <button onclick = "decrease_approver()" class="btn btn-primary">Decrease Approver Fields</button>
 <form action="\add_form" method="post">
-    <label for="form_name">Name of the form:</label>
-    <input type="text" name = "form_name">
+    <label class = "form-label"for="form_name">Name of the form:</label>
+    <input type="text" class="form-control" name = "form_name">
     <p>Student Details go here</p>
-    <input type="text" name="Name" id="Name" value = "Name" readonly style="display: block;">
-    <input type="text" name="Roll" value = "Roll No" readonly style = "display: block;">
+    <input type="text" class="form-control" name="Name" id="Name" value = "Name" readonly style="display: block;">
+    <input type="text" class="form-control" name="Roll" value = "Roll No" readonly style = "display: block;">
     <div id = "student_details"></div>
     <p>Approver details go here</p>
     <div id = 'approver_details'></div>
     <input type="submit" value="Create a new form">
 </form>
+</div>
 {% endblock %}
