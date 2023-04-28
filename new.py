@@ -22,7 +22,7 @@ sender_password = "fgbboncngfheozws"
 mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="2312",
+        password="Vasisht@27",
         database="test2"
         )
 cursor = mydb.cursor()
@@ -149,16 +149,15 @@ def create_instance():
     if session['loggedin']==False:
         return redirect(url_for('login'))
     table_name = request.form['Form_type']
-    print(table_name)
+    # print(table_name)
     #now we have table name we need to find the coloumns.
     query = 'SELECT * from ' + table_name
     cursor.execute(query)
     records = cursor.fetchall()
     col_names = [i[0] for i in cursor.description]
-
     #now we have a list of coloumn Names
-    col_names = col_names[1:-1]
-    return render_template('new_form.html',col_names = col_names,form_name = table_name.replace('_',' '))
+    col_names = col_names[3:-1]
+    return render_template('new_form.html',col_names = col_names,form_name = table_name)
 
 
 
