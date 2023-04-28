@@ -3,12 +3,28 @@
 # def test_index_route():
 #     response = app.test_client().get('/')
 #     assert response.status_code == 200
-
+import flask
 import pytest
 from new import app
 import MySQLdb
 import mysql.connector
 import MySQLdb.cursors
+import unittest
+
+from flask import template_rendered
+from contextlib import contextmanager
+
+@contextmanager
+def captured_templates(app):
+    recorded = []
+    def record(sender, template, context, **extra):
+        recorded.append((template, context))
+    template_rendered.connect(record, app)
+    try:
+        yield recorded
+    finally:
+        template_rendered.disconnect(record, app)
+
 @pytest.fixture
 def client():
     app.config['TESTING'] = True
@@ -36,7 +52,7 @@ def client():
         #     conn.commit()
             
 
-
+#testing case when student enters correct credentials
 def test_student_login_success(client):
     response = client.post('/login', data=dict(
         email='cs20btech11035@iith.ac.in',
@@ -46,6 +62,7 @@ def test_student_login_success(client):
     assert response.status_code == 200
     assert b'Logged in successfully' in response.data
 
+#testing case when admin enters correct credentials
 def test_admin_login_success(client):
     response = client.post('/login', data=dict(
         email='cs20btech11002@iith.ac.in',
@@ -55,7 +72,7 @@ def test_admin_login_success(client):
     assert response.status_code == 200
     assert b'Hello admin' in response.data
 
-
+#testing case when student enters wrong credentials
 def test_student_login_failure(client):
     response = client.post('/login', data=dict(
         email='cs20btech11035@iith.ac.in',
@@ -65,6 +82,7 @@ def test_student_login_failure(client):
     assert response.status_code == 200
     assert b'Invalid credentials. Try again.' in response.data
 
+#testing case when admin enters wrong credentials
 def test_admin_login_failure(client):
     response = client.post('/login', data=dict(
         email='cs20btech11035@iith.ac.in',
@@ -74,6 +92,8 @@ def test_admin_login_failure(client):
     assert response.status_code == 200
     assert b'Invalid credentials. Try again.' in response.data
 
+
+#testing case when existing user tries to register.
 def test_old_student_register(client):
     response = client.post('/register', data=dict(
         username='Manaswini',
@@ -86,6 +106,8 @@ def test_old_student_register(client):
     assert response.status_code == 200
     assert b'Account already exists !' in response.data
 
+
+#testing case when new user doesn't provide all details
 def test_new_student_missing_details_register(client):
     response = client.post('/register', data=dict(
         email='cs20btech11035@iith.ac.in',
@@ -96,7 +118,7 @@ def test_new_student_missing_details_register(client):
     assert response.status_code == 200
     assert b'Please fill out the form !' in response.data
 
-
+#testing case when new user registers correctly.
 def test_new_student_register(client):
     response = client.post('/register', data=dict(
         username='Shounik',
@@ -112,3 +134,37 @@ def test_new_student_register(client):
     cur = conn.cursor()
     cur.execute("DELETE FROM studentlogin WHERE email='cs20btech11055@iith.ac.in' ")
     conn.commit()
+
+#testing case when user tries to open homepage without logging in
+def test_home_page_without_login(client):
+        with client.session_transaction() as sess:
+            sess['loggedin']=False
+        # client.get('/')
+        response = client.get('/homepage',follow_redirects=True)
+        assert b'Please login to continue !' in response.data
+
+
+# testing case when student tries to open homepage
+def test_home_page_student(client):
+        with client.session_transaction() as sess:
+            sess['loggedin']=True
+            sess['email']='cs20btech11035@iith.ac.in'
+            sess['id']='Manaswini'
+            sess['type']='Student'
+        with captured_templates(app) as templates:
+             response = client.get('/homepage',follow_redirects=True)
+             assert response.status_code == 200
+             template, context = templates[0]
+             assert template.name == 'studenthomepage.html'
+        
+
+
+#testing case when admin tries to open homepage
+def test_home_page_admin(client):
+        with client.session_transaction() as sess:
+            sess['type']='Admin'
+            sess['loggedin']= True
+        # client.get('/')
+        response = client.get('/homepage',follow_redirects=True)
+        # assert flask.session['loggedin']==True
+        assert b'Hello admin' in response.data

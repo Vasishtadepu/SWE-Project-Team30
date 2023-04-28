@@ -22,8 +22,8 @@ sender_password = "fgbboncngfheozws"
 mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="1234",
-        database="test"
+        password="2312",
+        database="test2"
         )
 cursor = mydb.cursor()
 
@@ -115,8 +115,9 @@ def register():
 @app.route('/homepage')
 def homepage():
     # print("Here")
+    print(session)
     if session['loggedin']==False:
-        return redirect(url_for('login', message='Please login to continue !'))
+        return render_template('login.html', message='Please login to continue !')
     if session['type'] == 'Admin':
         return render_template('adminhomepage.html',message = "Hello admin")
     elif session['id'] and session['email']:
