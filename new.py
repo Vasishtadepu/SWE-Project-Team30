@@ -131,7 +131,7 @@ def logout():
     session.pop('loggedin', None)
     session.pop('id', None)
     session.pop('email', None)
-    return redirect(url_for('login'))
+    return render_template('login.html')
 
 
 @app.route('/formlist')
@@ -155,7 +155,7 @@ def create_instance():
 
     #now we have a list of coloumn Names
     col_names = col_names[1:-1]
-    return render_template('new_form.html',col_names = col_names,table_name = table_name)
+    return render_template('new_form.html',col_names = col_names,form_name = table_name.replace('_',' '))
 
 
 

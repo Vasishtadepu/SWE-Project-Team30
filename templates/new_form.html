@@ -2,7 +2,7 @@
 {% extends "base.html" %}
 {% block app %}
 <div class="container main-block">
-    <h1>{{table_name.capitalize()}} Form</h1>
+    <h1>{{form_name}}</h1>
     <form action="\save_instance" method="post">
         <input type="hidden" name="table_name" value = {{table_name}}>
         <div class="form-new">

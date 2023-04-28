@@ -132,6 +132,9 @@ def test_new_student_register(client):
     assert b'You have successfully registered !' in response.data
     conn = mysql.connector.connect(host="localhost",user="root",password="2312",database="test2")
     cur = conn.cursor()
+    cur.execute("SELECT * FROM studentlogin WHERE email = 'cs20btech11055@iith.ac.in'")
+    account = cur.fetchone()
+    assert account
     cur.execute("DELETE FROM studentlogin WHERE email='cs20btech11055@iith.ac.in' ")
     conn.commit()
 
@@ -168,3 +171,26 @@ def test_home_page_admin(client):
         response = client.get('/homepage',follow_redirects=True)
         # assert flask.session['loggedin']==True
         assert b'Hello admin' in response.data
+
+#testing logout
+def test_logout(client):
+      with client.session_transaction() as sess:
+            sess['id']='Manaswini'
+            sess['email']='cs20btech11035@iith.ac.in'
+            sess['loggedin']= True
+        # client.get('/')
+      with captured_templates(app) as templates:
+             response = client.get('/logout',follow_redirects=True)
+             assert response.status_code == 200
+             template, context = templates[0]
+             assert template.name == 'login.html'
+        
+#testing create_instance when user selects a form to fill
+def test_create_instance(client):
+     with captured_templates(app) as templates:
+             response = client.get('/create_instance',data=dict(Form_type='Additional_Course_Conversion_Form'),follow_redirects=True)
+             assert response.status_code == 200
+             template, context = templates[0]
+             print('context=',context)
+             assert template.name == 'new_form.html'
+             assert 'Additional Course Conversion Form' == context['form_name']

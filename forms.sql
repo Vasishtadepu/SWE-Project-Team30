@@ -1,6 +1,5 @@
 
-CREATE TABLE IF NOT EXISTS `additionalcourseconversion`
-(
+CREATE TABLE Additional_Course_Conversion_Form(
     `id` INT(11) ,
     `Name` VARCHAR(100) ,
     `Roll_No` VARCHAR(100) ,
@@ -24,8 +23,7 @@ CREATE TABLE IF NOT EXISTS `additionalcourseconversion`
 );
 
 
-CREATE TABLE IF NOT EXISTS `leaveform`
-(
+CREATE TABLE Leave_Form(
     `id` INT(11) ,
     `Name` VARCHAR(100) ,
     `Roll_No` VARCHAR(100) ,
@@ -46,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `leaveform`
 );
 
 
-create table JRF_to_SRF_conversion(
+create table JRF_to_SRF_conversion_Form(
     `id`  INT(11) ,
     `Name`  VARCHAR(100) ,
     `Roll_No`  VARCHAR(100) ,
@@ -105,7 +103,7 @@ create table Guide_Change_Consent_Form(
     `approvelevel`  VARCHAR(150) );
 
 
-create table Fellowship_form(
+create table Fellowship_Form(
     `id`  INT(11) ,
     `Name`  VARCHAR(100) ,
     `Roll_No`  VARCHAR(100) ,
@@ -123,9 +121,9 @@ create table Fellowship_form(
     `Faculty_Mail`  VARCHAR(100) ,
     `approvelevel`  VARCHAR(150) );
 
-INSERT INTO forms_table(form_name,table_name,no_of_approvers)  VALUES ('Additional Course Conversion','additionalcourseconversion','4');
-INSERT INTO forms_table(form_name,table_name,no_of_approvers) VALUES('Leave Form', 'leaveform','3');
-INSERT INTO forms_table(form_name,table_name,no_of_approvers) VALUES('JRF to SRF Conversion', 'JRF_to_SRF_conversion','5');
+INSERT INTO forms_table(form_name,table_name,no_of_approvers)  VALUES ('Additional Course Conversion','Additional_Course_Conversion_Form','4');
+INSERT INTO forms_table(form_name,table_name,no_of_approvers) VALUES('Leave Form', 'Leave_Form','3');
+INSERT INTO forms_table(form_name,table_name,no_of_approvers) VALUES('JRF to SRF Conversion', 'JRF_to_SRF_conversion_Form','5');
 INSERT INTO forms_table(form_name,table_name,no_of_approvers) VALUES('Guide Consent Form', 'Guide_Consent_Form','9');
 INSERT INTO forms_table(form_name,table_name,no_of_approvers) VALUES('Guide Change Consent Form', 'Guide_Change_Consent_Form','4');
-INSERT INTO forms_table(form_name,table_name,no_of_approvers) VALUES('Fellowship Form', 'Fellowship_form','2');
+INSERT INTO forms_table(form_name,table_name,no_of_approvers) VALUES('Fellowship Form', 'Fellowship_Form','2');
