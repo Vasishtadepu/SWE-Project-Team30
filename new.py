@@ -128,9 +128,10 @@ def homepage():
 
 @app.route('/logout')
 def logout():
-    session.pop('loggedin', None)
+    #session.pop('loggedin', None)
     session.pop('id', None)
     session.pop('email', None)
+    session['loggedin']=False
     return render_template('login.html')
 
 
@@ -145,6 +146,8 @@ def formlist():
 
 @app.route('/create_instance',methods = ['GET','POST'])
 def create_instance():
+    if session['loggedin']==False:
+        return redirect(url_for('login'))
     table_name = request.form['Form_type']
     print(table_name)
     #now we have table name we need to find the coloumns.
@@ -162,6 +165,8 @@ def create_instance():
 
 @app.route('/save_instance',methods = ['GET','POST'])
 def save_instance():
+    if session['loggedin']==False:
+        return redirect(url_for('login'))
     table_name = request.form['table_name']
     form_name=get_forms()[table_name]
     #Now we push the submitted form into submitted_forms table.
@@ -219,6 +224,8 @@ def save_instance():
 
 @app.route('/update_instance',methods = ['GET','POST'])
 def update_instance():
+    if session['loggedin']==False:
+        return redirect(url_for('login'))
     form_id = request.form['form_id']
     action = request.form['approve']
     query = 'SELECT * from submittedforms where id=%s'
@@ -328,6 +335,8 @@ def approve(form_id,approvelevel):
 #Function which gives basic detail about the history.
 @app.route('/submitted_forms')
 def submitted_forms():
+    if session['loggedin']==False:
+        return redirect(url_for('login'))
     #getting all the forms submitted by him from submitted forms table.
     query = 'SELECT * from submittedforms WHERE upper(rollno) = %s'
     values = [session['rollno'].upper()]
@@ -345,6 +354,8 @@ def submitted_forms():
 #Function which gives detailed info about the form.
 @app.route('/expanded_history/<form_id>/<form_type>')
 def expanded_history(form_id,form_type):
+    if session['loggedin']==False:
+        return redirect(url_for('login'))
     dict_form_type = {
         '1' : 'additionalcourseconversion'
     }
@@ -371,11 +382,15 @@ def expanded_history(form_id,form_type):
 '''This region handles all the functions related creating a new type of form.'''
 @app.route('/create_form')
 def create_form():
+    if session['loggedin']==False:
+        return redirect(url_for('login'))
     return render_template('create_form.html')
 
 #This route handles the adding of the form into the table.
 @app.route('/add_form',methods = ['GET','POST'])
 def add_form():
+    if session['loggedin']==False:
+        return redirect(url_for('login'))
     #First we get the form name and the number of approvers.
     #To push into the forms_table.
     form_name = request.form['form_name']

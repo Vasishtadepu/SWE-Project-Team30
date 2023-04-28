@@ -152,7 +152,7 @@ def test_home_page_student(client):
         with client.session_transaction() as sess:
             sess['loggedin']=True
             sess['email']='cs20btech11035@iith.ac.in'
-            sess['id']='Manaswini'
+            sess['id']='1'
             sess['type']='Student'
         with captured_templates(app) as templates:
              response = client.get('/homepage',follow_redirects=True)
@@ -175,8 +175,11 @@ def test_home_page_admin(client):
 #testing logout
 def test_logout(client):
       with client.session_transaction() as sess:
-            sess['id']='Manaswini'
+            sess['id']='1'
+            sess['name']='Manaswini'
+            sess['department']='CSE'
             sess['email']='cs20btech11035@iith.ac.in'
+            sess['rollno']='CS20BTECH11035'
             sess['loggedin']= True
         # client.get('/')
       with captured_templates(app) as templates:
@@ -184,69 +187,267 @@ def test_logout(client):
              assert response.status_code == 200
              template, context = templates[0]
              assert template.name == 'login.html'
-        
+
+#testing case when user tries to open create_instance without logging in
+def test_create_instance_without_login(client):
+        with client.session_transaction() as sess:
+            sess['loggedin']=False
+        # client.get('/')
+        with captured_templates(app) as templates:
+            response = client.get('/create_instance',follow_redirects=True)
+            assert response.status_code == 200
+            template, context = templates[0]
+            assert template.name == 'login.html'
+
 #testing create_instance when user selects Additional Course Conversion Form to fill
-def test_create_instance_additional_course_conversion_form(client):
+def test_create_instance_Additional_Course_Conversion_Form(client):
+     with client.session_transaction() as sess:
+            sess['id']='1'
+            sess['name']='Manaswini'
+            sess['department']='CSE'
+            sess['email']='cs20btech11035@iith.ac.in'
+            sess['rollno']='CS20BTECH11035'
+            sess['loggedin']= True
      with captured_templates(app) as templates:
              response = client.get('/create_instance',data=dict(Form_type='Additional_Course_Conversion_Form'),follow_redirects=True)
              assert response.status_code == 200
              template, context = templates[0]
-             print('context=',context)
              assert template.name == 'new_form.html'
              assert 'Additional Course Conversion Form' == context['form_name']
              assert 16==len(context['col_names'])
 
 #testing create_instance when user selects Leave Form to fill
 def test_create_instance_Leave_Form(client):
+     with client.session_transaction() as sess:
+            sess['id']='1'
+            sess['name']='Manaswini'
+            sess['department']='CSE'
+            sess['email']='cs20btech11035@iith.ac.in'
+            sess['rollno']='CS20BTECH11035'
+            sess['loggedin']= True
      with captured_templates(app) as templates:
              response = client.get('/create_instance',data=dict(Form_type='Leave_Form'),follow_redirects=True)
              assert response.status_code == 200
              template, context = templates[0]
-             print('context=',context)
              assert template.name == 'new_form.html'
              assert 'Leave Form' == context['form_name']
              assert 13==len(context['col_names'])
 
 #testing create_instance when user selects JRF to SRF conversion Form to fill
 def test_create_instance_JRF_to_SRF_conversion_Form(client):
+     with client.session_transaction() as sess:
+            sess['id']='1'
+            sess['name']='Manaswini'
+            sess['department']='CSE'
+            sess['email']='cs20btech11035@iith.ac.in'
+            sess['rollno']='CS20BTECH11035'
+            sess['loggedin']= True
      with captured_templates(app) as templates:
              response = client.get('/create_instance',data=dict(Form_type='JRF_to_SRF_conversion_Form'),follow_redirects=True)
              assert response.status_code == 200
              template, context = templates[0]
-             print('context=',context)
              assert template.name == 'new_form.html'
              assert 'JRF to SRF conversion Form' == context['form_name']
              assert 16==len(context['col_names'])
 
 #testing create_instance when user selects Guide Consent Form to fill
 def test_create_instance_Guide_Consent_Form(client):
+     with client.session_transaction() as sess:
+            sess['id']='1'
+            sess['name']='Manaswini'
+            sess['department']='CSE'
+            sess['email']='cs20btech11035@iith.ac.in'
+            sess['rollno']='CS20BTECH11035'
+            sess['loggedin']= True
      with captured_templates(app) as templates:
              response = client.get('/create_instance',data=dict(Form_type='Guide_Consent_Form'),follow_redirects=True)
              assert response.status_code == 200
              template, context = templates[0]
-             print('context=',context)
              assert template.name == 'new_form.html'
              assert 'Guide Consent Form' == context['form_name']
              assert 19==len(context['col_names'])
 
 #testing create_instance when user selects Guide Change Consent Form to fill
 def test_create_instance_Guide_Change_Consent_Form(client):
+     with client.session_transaction() as sess:
+            sess['id']='1'
+            sess['name']='Manaswini'
+            sess['department']='CSE'
+            sess['email']='cs20btech11035@iith.ac.in'
+            sess['rollno']='CS20BTECH11035'
+            sess['loggedin']= True
      with captured_templates(app) as templates:
              response = client.get('/create_instance',data=dict(Form_type='Guide_Change_Consent_Form'),follow_redirects=True)
              assert response.status_code == 200
              template, context = templates[0]
-             print('context=',context)
              assert template.name == 'new_form.html'
              assert 'Guide Change Consent Form' == context['form_name']
              assert 10==len(context['col_names'])
 
 #testing create_instance when user selects Fellowship Form to fill
 def test_create_instance_Fellowship_Form(client):
+     with client.session_transaction() as sess:
+            sess['id']='1'
+            sess['name']='Manaswini'
+            sess['department']='CSE'
+            sess['email']='cs20btech11035@iith.ac.in'
+            sess['rollno']='CS20BTECH11035'
+            sess['loggedin']= True
      with captured_templates(app) as templates:
              response = client.get('/create_instance',data=dict(Form_type='Fellowship_Form'),follow_redirects=True)
              assert response.status_code == 200
              template, context = templates[0]
-             print('context=',context)
              assert template.name == 'new_form.html'
              assert 'Fellowship Form' == context['form_name']
              assert 14==len(context['col_names'])
+    
+#testing save_instance when student submits Additional Course Conversion Form
+def test_save_instance_Additional_Course_Conversion_Form(client):
+     with client.session_transaction() as sess:
+            sess['id']='1'
+            sess['name']='Manaswini'
+            sess['department']='CSE'
+            sess['email']='cs20btech11035@iith.ac.in'
+            sess['rollno']='CS20BTECH11035'
+            sess['loggedin']= True
+     with captured_templates(app) as templates:
+          response = client.get(
+                '/save_instance',data=dict(table_name='Additional_Course_Conversion_Form',Name='Manaswini',Roll_No='CS20BTECH11035',
+                                            Course1='SWE',Course_Number1='CS4443',Credits1='3',Semester1='6',Course2='Fraud Analytics',
+                                            Course_Number2='CS6890', Credits2='3',Semester2='6',Guide_Name= 'Dr.Ramakrishna Upadrasta',
+                                            HoD_Name= 'Subramanyam Kalyansundaram',Guide_Mail ='manaswininyalapogula@gmail.com',HoD_Mail='manaswininyalapogula@gmail.com',
+                                            Deputy_Registrar_Mail='manaswininyalapogula@gmail.com',Dean_Mail='manaswininyalapogula@gmail.com'
+                                            ),follow_redirects=True)
+          assert response.status_code == 200
+          template, context = templates[-1]
+          template1, context1 = templates[0]
+          assert template1.name == 'template1.html'
+          assert template.name == 'studenthomepage.html'
+          assert 'mail sent to first approver' == context['message']
+
+#testing save_instance when student submits Leave Form
+def test_save_instance_Leave_Form(client):
+     with client.session_transaction() as sess:
+            sess['id']='1'
+            sess['name']='Manaswini'
+            sess['department']='CSE'
+            sess['email']='cs20btech11035@iith.ac.in'
+            sess['rollno']='CS20BTECH11035'
+            sess['loggedin']= True
+     with captured_templates(app) as templates:
+          response = client.get(
+                '/save_instance',data=dict(table_name='Leave_Form',Name='Manaswini',Roll_No='CS20BTECH11035',
+                                            Semester='6',Leave_from='2/5/2023',Leave_to='10/5/2023',No_of_days='9',
+                                            Reason='Health issues',Phone='6305238950',Guide_Name= 'Dr.Ramakrishna Upadrasta',
+                                            HoD_Name= 'Subramanyam Kalyansundaram',Guide_Mail ='manaswininyalapogula@gmail.com',HoD_Mail='manaswininyalapogula@gmail.com',
+                                            Dealing_Assistant_Mail='manaswininyalapogula@gmail.com'
+                                            ),follow_redirects=True)
+          assert response.status_code == 200
+          template, context = templates[-1]
+          template1, context1 = templates[0]
+          assert template1.name == 'template1.html'
+          assert template.name == 'studenthomepage.html'
+          assert 'mail sent to first approver' == context['message']
+
+
+#testing save_instance when student submits JRF to SRF conversion Form
+def test_save_instance_JRF_to_SRF_conversion_Form(client):
+     with client.session_transaction() as sess:
+            sess['id']='1'
+            sess['name']='Manaswini'
+            sess['department']='CSE'
+            sess['email']='cs20btech11035@iith.ac.in'
+            sess['rollno']='CS20BTECH11035'
+            sess['loggedin']= True
+     with captured_templates(app) as templates:
+          response = client.get(
+                '/save_instance',data=dict(table_name='JRF_to_SRF_conversion_Form',Name='Manaswini',Roll_No='CS20BTECH11035',
+                                            Joining_Date='2/5/2021',Department='CSE',External_Member_Name='Dr.Ramu' ,Guide_Name= 'Dr.Ramakrishna Upadrasta',
+                                            HoD_or_Dean_Name= 'Subramanyam Kalyansundaram',Date_of_Assessment='5/5/2023',Time='2pm', Venue='Auditorium',
+                                            Assessment_of_committee='accepted',External_Member_Mail='manaswininyalapogula@gmail.com',
+                                            Guide_Mail ='manaswininyalapogula@gmail.com',HoD_Mail='manaswininyalapogula@gmail.com',
+                                            Deputy_Registrar_Mail='manaswininyalapogula@gmail.com',Dean_Mail='manaswininyalapogula@gmail.com'
+                                            ),follow_redirects=True)
+          assert response.status_code == 200
+          template, context = templates[-1]
+          template1, context1 = templates[0]
+          assert template1.name == 'template1.html'
+          assert template.name == 'studenthomepage.html'
+          assert 'mail sent to first approver' == context['message']
+
+
+#testing save_instance when student submits Guide Change Consent Form
+def test_save_instance_Guide_Change_Consent_Form(client):
+     with client.session_transaction() as sess:
+            sess['id']='1'
+            sess['name']='Manaswini'
+            sess['department']='CSE'
+            sess['email']='cs20btech11035@iith.ac.in'
+            sess['rollno']='CS20BTECH11035'
+            sess['loggedin']= True
+     with captured_templates(app) as templates:
+          response = client.get(
+                '/save_instance',data=dict(table_name='Guide_Change_Consent_Form',Name='Manaswini',Roll_No='CS20BTECH11035',
+                                            Department='CSE',Present_Guide_Name='Dr.Ramu' ,Proposed_Guide_Name= 'Dr.Ramakrishna Upadrasta',
+                                            HoD_Name= 'Subramanyam Kalyansundaram',Present_Guide_Mail='manaswininyalapogula@gmail.com',
+                                            Proposed_Guide_Mail ='manaswininyalapogula@gmail.com',
+                                            Deputy_Registrar_Mail='manaswininyalapogula@gmail.com',Dean_Mail='manaswininyalapogula@gmail.com'
+                                            ),follow_redirects=True)
+          assert response.status_code == 200
+          template, context = templates[-1]
+          template1, context1 = templates[0]
+          assert template1.name == 'template1.html'
+          assert template.name == 'studenthomepage.html'
+          assert 'mail sent to first approver' == context['message']
+
+#testing save_instance when student submits Guide Consent Form
+def test_save_instance_Guide_Consent_Form(client):
+     with client.session_transaction() as sess:
+            sess['id']='1'
+            sess['name']='Manaswini'
+            sess['department']='CSE'
+            sess['email']='cs20btech11035@iith.ac.in'
+            sess['rollno']='CS20BTECH11035'
+            sess['loggedin']= True
+     with captured_templates(app) as templates:
+          response = client.get(
+                '/save_instance',data=dict(table_name='Guide_Consent_Form',Name='Manaswini',Roll_No='CS20BTECH11035',
+                                           Joining_Date='2/5/2021',Department='CSE',Choose_the_supervisor_at_end_or_at_last_of_first_Semester='first' ,
+                                           Faculty1_Name= 'Dr.Ramakrishna Upadrasta', Faculty2_Name= 'Dr.Ramakrishna Upadrasta', Faculty3_Name= 'Dr.Ramakrishna Upadrasta',
+                                           Faculty4_Name= 'Dr.Ramakrishna Upadrasta',Faculty5_Name= 'Dr.Ramakrishna Upadrasta',
+                                           Guide_Mail='manaswininyalapogula@gmail.com',
+                                            CoGuide_Mail ='manaswininyalapogula@gmail.com',
+                                            DPGC_Mail='manaswininyalapogula@gmail.com',HoD_Mail='manaswininyalapogula@gmail.com',
+                                            Faculty1_Mail='manaswininyalapogula@gmail.com', Faculty2_Mail='manaswininyalapogula@gmail.com',Faculty3_Mail='manaswininyalapogula@gmail.com',
+                                            Faculty4_Mail='manaswininyalapogula@gmail.com',Faculty5_Mail='manaswininyalapogula@gmail.com'
+                                            ),follow_redirects=True)
+          assert response.status_code == 200
+          template, context = templates[-1]
+          template1, context1 = templates[0]
+          assert template1.name == 'template1.html'
+          assert template.name == 'studenthomepage.html'
+          assert 'mail sent to first approver' == context['message']
+
+#testing save_instance when student submits Fellowship Form
+def test_save_instance_Fellowship_Form(client):
+     with client.session_transaction() as sess:
+            sess['id']='1'
+            sess['name']='Manaswini'
+            sess['department']='CSE'
+            sess['email']='cs20btech11035@iith.ac.in'
+            sess['rollno']='CS20BTECH11035'
+            sess['loggedin']= True
+     with captured_templates(app) as templates:
+          response = client.get(
+                '/save_instance',data=dict(table_name='Fellowship_Form',Name='Manaswini',Roll_No='CS20BTECH11035',
+                                            Department='CSE',Joining_Year='2004',Stream='PHD', Scholarship_Month='5',
+                                            Number_of_Days_Attended='30', Amount_of_Stipend='10,000 rupees',
+                                            Scholarship_Type='CSIR', Project='CPS', Supervisor_Name='Dr.Aravind',
+                                            Faculty_Name='Dr.Karteek',Supervisor_Mail='manaswininyalapogula@gmail.com',Faculty_Mail ='manaswininyalapogula@gmail.com'
+                                            ),follow_redirects=True)
+          assert response.status_code == 200
+          template, context = templates[-1]
+          template1, context1 = templates[0]
+          assert template1.name == 'template1.html'
+          assert template.name == 'studenthomepage.html'
+          assert 'mail sent to first approver' == context['message']
