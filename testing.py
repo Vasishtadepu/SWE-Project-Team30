@@ -185,8 +185,8 @@ def test_logout(client):
              template, context = templates[0]
              assert template.name == 'login.html'
         
-#testing create_instance when user selects a form to fill
-def test_create_instance(client):
+#testing create_instance when user selects Additional Course Conversion Form to fill
+def test_create_instance_additional_course_conversion_form(client):
      with captured_templates(app) as templates:
              response = client.get('/create_instance',data=dict(Form_type='Additional_Course_Conversion_Form'),follow_redirects=True)
              assert response.status_code == 200
@@ -194,3 +194,59 @@ def test_create_instance(client):
              print('context=',context)
              assert template.name == 'new_form.html'
              assert 'Additional Course Conversion Form' == context['form_name']
+             assert 16==len(context['col_names'])
+
+#testing create_instance when user selects Leave Form to fill
+def test_create_instance_Leave_Form(client):
+     with captured_templates(app) as templates:
+             response = client.get('/create_instance',data=dict(Form_type='Leave_Form'),follow_redirects=True)
+             assert response.status_code == 200
+             template, context = templates[0]
+             print('context=',context)
+             assert template.name == 'new_form.html'
+             assert 'Leave Form' == context['form_name']
+             assert 13==len(context['col_names'])
+
+#testing create_instance when user selects JRF to SRF conversion Form to fill
+def test_create_instance_JRF_to_SRF_conversion_Form(client):
+     with captured_templates(app) as templates:
+             response = client.get('/create_instance',data=dict(Form_type='JRF_to_SRF_conversion_Form'),follow_redirects=True)
+             assert response.status_code == 200
+             template, context = templates[0]
+             print('context=',context)
+             assert template.name == 'new_form.html'
+             assert 'JRF to SRF conversion Form' == context['form_name']
+             assert 16==len(context['col_names'])
+
+#testing create_instance when user selects Guide Consent Form to fill
+def test_create_instance_Guide_Consent_Form(client):
+     with captured_templates(app) as templates:
+             response = client.get('/create_instance',data=dict(Form_type='Guide_Consent_Form'),follow_redirects=True)
+             assert response.status_code == 200
+             template, context = templates[0]
+             print('context=',context)
+             assert template.name == 'new_form.html'
+             assert 'Guide Consent Form' == context['form_name']
+             assert 19==len(context['col_names'])
+
+#testing create_instance when user selects Guide Change Consent Form to fill
+def test_create_instance_Guide_Change_Consent_Form(client):
+     with captured_templates(app) as templates:
+             response = client.get('/create_instance',data=dict(Form_type='Guide_Change_Consent_Form'),follow_redirects=True)
+             assert response.status_code == 200
+             template, context = templates[0]
+             print('context=',context)
+             assert template.name == 'new_form.html'
+             assert 'Guide Change Consent Form' == context['form_name']
+             assert 10==len(context['col_names'])
+
+#testing create_instance when user selects Fellowship Form to fill
+def test_create_instance_Fellowship_Form(client):
+     with captured_templates(app) as templates:
+             response = client.get('/create_instance',data=dict(Form_type='Fellowship_Form'),follow_redirects=True)
+             assert response.status_code == 200
+             template, context = templates[0]
+             print('context=',context)
+             assert template.name == 'new_form.html'
+             assert 'Fellowship Form' == context['form_name']
+             assert 14==len(context['col_names'])
