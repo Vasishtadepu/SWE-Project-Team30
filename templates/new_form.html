@@ -5,11 +5,13 @@
     <h1>{{table_name.capitalize()}} Form</h1>
     <form action="\save_instance" method="post">
         <input type="hidden" name="table_name" value = {{table_name}}>
+        <div class="form-new">
         {% for field in col_names%}
         <label for={{field}} class="form-label">{{ field.replace('_',' ').capitalize() }}</label>
         <input type="text" name={{field}} class="form-control">
         <br>
         {%endfor%}
+        </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>
