@@ -87,28 +87,29 @@ def login():
 @app.route('/register', methods =['GET', 'POST'])
 def register():
     msg = ''
-    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form :
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form and 'department' in request.form and 'rollno' in request.form :
         username = request.form['username']
         password = request.form['password']
         email = request.form['email']
         rollno = request.form['rollno']
         department = request.form['department']
         # cursor = mysql.connection.cursor(cursor.DictCursor)
-        values = (str(email), )
+        values = (str(email),)
         cursor.execute('SELECT * FROM studentlogin WHERE email = %s', values)
         account = cursor.fetchone()
+        print(account)
         if account:
             msg = 'Account already exists !'
-        elif not username or not password or not email:
+        elif not username or not password or not email or not rollno or not department:
             msg = 'Please fill out the form !'
         else:
             cursor.execute('INSERT INTO studentlogin (name,password,email,rollno,department) VALUES (%s,%s, %s, %s, %s)', (username, password, email, rollno, department))
             mydb.commit()
-            print("You came here")
             msg = 'You have successfully registered !'
-            return redirect(url_for('login'))
+            return render_template('login.html', message = msg)
     elif request.method == 'POST':
         msg = 'Please fill out the form !'
+    print(msg)
     return render_template('register.html', message = msg)
 
 @app.route('/homepage')
