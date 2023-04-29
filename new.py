@@ -22,8 +22,8 @@ sender_password = "fgbboncngfheozws"
 mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="2312",
-        database="test2"
+        password="1234",
+        database="test"
         )
 cursor = mydb.cursor()
 
@@ -352,7 +352,7 @@ def submitted_forms(table_name):
         '1' : 'accepted',
         '2' :'rejected'
     }
-    return render_template("history.html",records = records,dict_status = dict_status,forms_list = get_forms())
+    return render_template("history.html",records = records,dict_status = dict_status,forms_list = get_forms(), table_name=table_name)
 
 #Function which gives detailed info about the form.
 @app.route('/expanded_history/<form_id>/<form_type>')
@@ -379,7 +379,7 @@ def expanded_history(form_id,form_type):
     if status is pending then everyone till approver level accepted remaining pending
     '''
     approve_level = int(row[0]['approvelevel'])
-    return render_template("expanded.html",row = row[0],status = status,approve_level = approve_level)
+    return render_template("expanded.html",row = row[0],status = status,approve_level = approve_level,form_name=form_type)
 
 
 '''This region handles all the functions related creating a new type of form.'''

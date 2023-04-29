@@ -11,6 +11,7 @@
         <br>
         <label for="Roll_No" class = "form-label">Roll No</label>
         <input type="text" name="Roll_No" value = {{session.rollno}} readonly class = "form-control">   
+        <br>
         {% for field in col_names%}
         <label for={{field}} class="form-label">{{ field.replace('_',' ').capitalize() }}</label>
         <input type="text" name={{field}} class="form-control">
