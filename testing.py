@@ -51,6 +51,7 @@ def client():
         #     # cur.execute("DROP TABLE IF EXISTS adminlogin")
         #     conn.commit()
             
+conn = mysql.connector.connect(host="localhost",user="root",password="2312",database="test2")
 
 #testing case when student enters correct credentials
 def test_student_login_success(client):
@@ -130,7 +131,6 @@ def test_new_student_register(client):
     ), follow_redirects=True)
     assert response.status_code == 200
     assert b'You have successfully registered !' in response.data
-    conn = mysql.connector.connect(host="localhost",user="root",password="2312",database="test2")
     cur = conn.cursor()
     cur.execute("SELECT * FROM studentlogin WHERE email = 'cs20btech11055@iith.ac.in'")
     account = cur.fetchone()
@@ -213,8 +213,8 @@ def test_create_instance_Additional_Course_Conversion_Form(client):
              assert response.status_code == 200
              template, context = templates[0]
              assert template.name == 'new_form.html'
-             assert 'Additional Course Conversion Form' == context['form_name']
-             assert 16==len(context['col_names'])
+             assert 'Additional_Course_Conversion_Form' == context['form_name']
+             assert 14==len(context['col_names'])
 
 #testing create_instance when user selects Leave Form to fill
 def test_create_instance_Leave_Form(client):
@@ -230,8 +230,8 @@ def test_create_instance_Leave_Form(client):
              assert response.status_code == 200
              template, context = templates[0]
              assert template.name == 'new_form.html'
-             assert 'Leave Form' == context['form_name']
-             assert 13==len(context['col_names'])
+             assert 'Leave_Form' == context['form_name']
+             assert 11==len(context['col_names'])
 
 #testing create_instance when user selects JRF to SRF conversion Form to fill
 def test_create_instance_JRF_to_SRF_conversion_Form(client):
@@ -247,8 +247,8 @@ def test_create_instance_JRF_to_SRF_conversion_Form(client):
              assert response.status_code == 200
              template, context = templates[0]
              assert template.name == 'new_form.html'
-             assert 'JRF to SRF conversion Form' == context['form_name']
-             assert 16==len(context['col_names'])
+             assert 'JRF_to_SRF_conversion_Form' == context['form_name']
+             assert 14==len(context['col_names'])
 
 #testing create_instance when user selects Guide Consent Form to fill
 def test_create_instance_Guide_Consent_Form(client):
@@ -264,8 +264,8 @@ def test_create_instance_Guide_Consent_Form(client):
              assert response.status_code == 200
              template, context = templates[0]
              assert template.name == 'new_form.html'
-             assert 'Guide Consent Form' == context['form_name']
-             assert 19==len(context['col_names'])
+             assert 'Guide_Consent_Form' == context['form_name']
+             assert 17==len(context['col_names'])
 
 #testing create_instance when user selects Guide Change Consent Form to fill
 def test_create_instance_Guide_Change_Consent_Form(client):
@@ -281,8 +281,8 @@ def test_create_instance_Guide_Change_Consent_Form(client):
              assert response.status_code == 200
              template, context = templates[0]
              assert template.name == 'new_form.html'
-             assert 'Guide Change Consent Form' == context['form_name']
-             assert 10==len(context['col_names'])
+             assert 'Guide_Change_Consent_Form' == context['form_name']
+             assert 8==len(context['col_names'])
 
 #testing create_instance when user selects Fellowship Form to fill
 def test_create_instance_Fellowship_Form(client):
@@ -298,9 +298,10 @@ def test_create_instance_Fellowship_Form(client):
              assert response.status_code == 200
              template, context = templates[0]
              assert template.name == 'new_form.html'
-             assert 'Fellowship Form' == context['form_name']
-             assert 14==len(context['col_names'])
+             assert 'Fellowship_Form' == context['form_name']
+             assert 12==len(context['col_names'])
     
+
 #testing save_instance when student submits Additional Course Conversion Form
 def test_save_instance_Additional_Course_Conversion_Form(client):
      with client.session_transaction() as sess:
@@ -324,6 +325,16 @@ def test_save_instance_Additional_Course_Conversion_Form(client):
           assert template1.name == 'template1.html'
           assert template.name == 'studenthomepage.html'
           assert 'mail sent to first approver' == context['message']
+          cur = conn.cursor()
+          query2 = 'SELECT * from submittedforms where rollno = %s and formtype = %s'
+          values2 = ('CS20BTECH11035','Additional_Course_Conversion_Form')
+          cur.execute(query2,values2)
+          records = cur.fetchall()
+          row = records[-1]
+          form_id = row[0]
+          cur.execute("SELECT * FROM Additional_Course_Conversion_Form WHERE id =%s",(str(form_id),))
+          account = cur.fetchone()
+          assert account
 
 #testing save_instance when student submits Leave Form
 def test_save_instance_Leave_Form(client):
@@ -348,6 +359,16 @@ def test_save_instance_Leave_Form(client):
           assert template1.name == 'template1.html'
           assert template.name == 'studenthomepage.html'
           assert 'mail sent to first approver' == context['message']
+          cur = conn.cursor()
+          query2 = 'SELECT * from submittedforms where rollno = %s and formtype = %s'
+          values2 = ('CS20BTECH11035','Leave_Form')
+          cur.execute(query2,values2)
+          records = cur.fetchall()
+          row = records[-1]
+          form_id = row[0]
+          cur.execute("SELECT * FROM Leave_Form WHERE id =%s",(str(form_id),))
+          account = cur.fetchone()
+          assert account
 
 
 #testing save_instance when student submits JRF to SRF conversion Form
@@ -374,6 +395,16 @@ def test_save_instance_JRF_to_SRF_conversion_Form(client):
           assert template1.name == 'template1.html'
           assert template.name == 'studenthomepage.html'
           assert 'mail sent to first approver' == context['message']
+          cur = conn.cursor()
+          query2 = 'SELECT * from submittedforms where rollno = %s and formtype = %s'
+          values2 = ('CS20BTECH11035','JRF_to_SRF_conversion_Form')
+          cur.execute(query2,values2)
+          records = cur.fetchall()
+          row = records[-1]
+          form_id = row[0]
+          cur.execute("SELECT * FROM JRF_to_SRF_conversion_Form WHERE id =%s",(str(form_id),))
+          account = cur.fetchone()
+          assert account
 
 
 #testing save_instance when student submits Guide Change Consent Form
@@ -399,6 +430,16 @@ def test_save_instance_Guide_Change_Consent_Form(client):
           assert template1.name == 'template1.html'
           assert template.name == 'studenthomepage.html'
           assert 'mail sent to first approver' == context['message']
+          cur = conn.cursor()
+          query2 = 'SELECT * from submittedforms where rollno = %s and formtype = %s'
+          values2 = ('CS20BTECH11035','Guide_Change_Consent_Form')
+          cur.execute(query2,values2)
+          records = cur.fetchall()
+          row = records[-1]
+          form_id = row[0]
+          cur.execute("SELECT * FROM Guide_Change_Consent_Form WHERE id =%s",(str(form_id),))
+          account = cur.fetchone()
+          assert account
 
 #testing save_instance when student submits Guide Consent Form
 def test_save_instance_Guide_Consent_Form(client):
@@ -427,6 +468,16 @@ def test_save_instance_Guide_Consent_Form(client):
           assert template1.name == 'template1.html'
           assert template.name == 'studenthomepage.html'
           assert 'mail sent to first approver' == context['message']
+          cur = conn.cursor()
+          query2 = 'SELECT * from submittedforms where rollno = %s and formtype = %s'
+          values2 = ('CS20BTECH11035','Guide_Consent_Form')
+          cur.execute(query2,values2)
+          records = cur.fetchall()
+          row = records[-1]
+          form_id = row[0]
+          cur.execute("SELECT * FROM Guide_Consent_Form WHERE id =%s",(str(form_id),))
+          account = cur.fetchone()
+          assert account
 
 #testing save_instance when student submits Fellowship Form
 def test_save_instance_Fellowship_Form(client):
@@ -451,3 +502,13 @@ def test_save_instance_Fellowship_Form(client):
           assert template1.name == 'template1.html'
           assert template.name == 'studenthomepage.html'
           assert 'mail sent to first approver' == context['message']
+          cur = conn.cursor()
+          query2 = 'SELECT * from submittedforms where rollno = %s and formtype = %s'
+          values2 = ('CS20BTECH11035','Fellowship_Form')
+          cur.execute(query2,values2)
+          records = cur.fetchall()
+          row = records[-1]
+          form_id = row[0]
+          cur.execute("SELECT * FROM Fellowship_Form WHERE id =%s",(str(form_id),))
+          account = cur.fetchone()
+          assert account

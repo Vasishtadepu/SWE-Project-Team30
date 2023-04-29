@@ -22,7 +22,7 @@ sender_password = "fgbboncngfheozws"
 mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="Vasisht@27",
+        password="2312",
         database="test2"
         )
 cursor = mydb.cursor()
