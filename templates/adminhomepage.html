@@ -39,7 +39,7 @@
                 Hi {{session.email}}!!</br></br> Welcome to the home page...				
             </h1></br></br></br>
             <div class="btn-group" role="group" aria-label="Basic outlined example">
-                <a href="{{url_for('submitted_forms')}}" class="btn btn-outline-primary">Submitted Forms History</a>
+                <a href="{{url_for('submitted_forms',table = 'all')}}" class="btn btn-outline-primary">Submitted Forms History</a>
                 <a href="{{url_for('create_form')}}" class="btn btn-outline-primary"> Create New Form </a>
             </div>
             <!-- <a href="{{url_for('submitted_forms')}}" class="btn btn-primary">Submitted Forms History</a>

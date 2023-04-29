@@ -332,14 +332,18 @@ def approve(form_id,approvelevel):
 #Functions which handle history part of the code.
 
 #Function which gives basic detail about the history.
-@app.route('/submitted_forms')
-def submitted_forms():
+@app.route('/submitted_forms/<table_name>')
+def submitted_forms(table_name):
     if session['loggedin']==False:
         return redirect(url_for('login'))
     #getting all the forms submitted by him from submitted forms table.
-    query = 'SELECT * from submittedforms WHERE upper(rollno) = %s'
-    values = [session['rollno'].upper()]
-    print(values)
+    print('It comes here')
+    if table_name == "all":
+        query = 'SELECT * from submittedforms WHERE upper(rollno) = %s'
+        values = [session['rollno'].upper()]
+    else:
+        query = 'SELECT * from submittedforms WHERE upper(rollno) = %s and formtype = %s'
+        values = [session['rollno'].upper(),table_name]
     cursor.execute(query,values)
     records = cursor.fetchall()
     # len = len(records)
@@ -348,7 +352,7 @@ def submitted_forms():
         '1' : 'accepted',
         '2' :'rejected'
     }
-    return render_template("history.html",records = records,dict_status = dict_status)
+    return render_template("history.html",records = records,dict_status = dict_status,forms_list = get_forms())
 
 #Function which gives detailed info about the form.
 @app.route('/expanded_history/<form_id>/<form_type>')
@@ -429,6 +433,10 @@ def add_form():
     cursor.execute(create_stement)
     mydb.commit()
     return render_template('adminhomepage.html',message = "Form Added")
+
+@app.route('/filter',methods = ['GET','POST'])
+def filter():
+    return redirect(url_for('submitted_forms',table_name = request.form['table_name']))
 
 if __name__=="__main__":
     app.run(debug=True)
