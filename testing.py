@@ -10,6 +10,7 @@ import MySQLdb
 import mysql.connector
 import MySQLdb.cursors
 import unittest
+import requests
 
 from flask import template_rendered
 from contextlib import contextmanager
@@ -50,8 +51,8 @@ def client():
         #     # cur.execute("DROP TABLE IF EXISTS studentlogin")
         #     # cur.execute("DROP TABLE IF EXISTS adminlogin")
         #     conn.commit()
-            
-conn = mysql.connector.connect(host="localhost",user="root",password="2312",database="test2")
+database="test2"
+password="2312"
 
 #testing case when student enters correct credentials
 def test_student_login_success(client):
@@ -131,12 +132,15 @@ def test_new_student_register(client):
     ), follow_redirects=True)
     assert response.status_code == 200
     assert b'You have successfully registered !' in response.data
+    conn = mysql.connector.connect(host="localhost",user="root",password=password,database=database)
     cur = conn.cursor()
     cur.execute("SELECT * FROM studentlogin WHERE email = 'cs20btech11055@iith.ac.in'")
     account = cur.fetchone()
     assert account
     cur.execute("DELETE FROM studentlogin WHERE email='cs20btech11055@iith.ac.in' ")
     conn.commit()
+    cur.close()
+    conn.close()
 
 #testing case when user tries to open homepage without logging in
 def test_home_page_without_login(client):
@@ -301,6 +305,16 @@ def test_create_instance_Fellowship_Form(client):
              assert 'Fellowship_Form' == context['form_name']
              assert 12==len(context['col_names'])
     
+#testing case when user tries to open save_instance without logging in
+def test_save_instance_without_login(client):
+        with client.session_transaction() as sess:
+            sess['loggedin']=False
+        # client.get('/')
+        with captured_templates(app) as templates:
+            response = client.get('/save_instance',follow_redirects=True)
+            assert response.status_code == 200
+            template, context = templates[0]
+            assert template.name == 'login.html'
 
 #testing save_instance when student submits Additional Course Conversion Form
 def test_save_instance_Additional_Course_Conversion_Form(client):
@@ -325,6 +339,7 @@ def test_save_instance_Additional_Course_Conversion_Form(client):
           assert template1.name == 'template1.html'
           assert template.name == 'studenthomepage.html'
           assert 'mail sent to first approver' == context['message']
+          conn = mysql.connector.connect(host="localhost",user="root",password=password,database=database)
           cur = conn.cursor()
           query2 = 'SELECT * from submittedforms where rollno = %s and formtype = %s'
           values2 = ('CS20BTECH11035','Additional_Course_Conversion_Form')
@@ -335,6 +350,9 @@ def test_save_instance_Additional_Course_Conversion_Form(client):
           cur.execute("SELECT * FROM Additional_Course_Conversion_Form WHERE id =%s",(str(form_id),))
           account = cur.fetchone()
           assert account
+          cur.close()
+          conn.close()
+
 
 #testing save_instance when student submits Leave Form
 def test_save_instance_Leave_Form(client):
@@ -359,6 +377,7 @@ def test_save_instance_Leave_Form(client):
           assert template1.name == 'template1.html'
           assert template.name == 'studenthomepage.html'
           assert 'mail sent to first approver' == context['message']
+          conn = mysql.connector.connect(host="localhost",user="root",password=password,database=database)
           cur = conn.cursor()
           query2 = 'SELECT * from submittedforms where rollno = %s and formtype = %s'
           values2 = ('CS20BTECH11035','Leave_Form')
@@ -369,6 +388,8 @@ def test_save_instance_Leave_Form(client):
           cur.execute("SELECT * FROM Leave_Form WHERE id =%s",(str(form_id),))
           account = cur.fetchone()
           assert account
+          cur.close()
+          conn.close()
 
 
 #testing save_instance when student submits JRF to SRF conversion Form
@@ -395,6 +416,7 @@ def test_save_instance_JRF_to_SRF_conversion_Form(client):
           assert template1.name == 'template1.html'
           assert template.name == 'studenthomepage.html'
           assert 'mail sent to first approver' == context['message']
+          conn = mysql.connector.connect(host="localhost",user="root",password=password,database=database)
           cur = conn.cursor()
           query2 = 'SELECT * from submittedforms where rollno = %s and formtype = %s'
           values2 = ('CS20BTECH11035','JRF_to_SRF_conversion_Form')
@@ -405,6 +427,8 @@ def test_save_instance_JRF_to_SRF_conversion_Form(client):
           cur.execute("SELECT * FROM JRF_to_SRF_conversion_Form WHERE id =%s",(str(form_id),))
           account = cur.fetchone()
           assert account
+          cur.close()
+          conn.close()
 
 
 #testing save_instance when student submits Guide Change Consent Form
@@ -430,6 +454,7 @@ def test_save_instance_Guide_Change_Consent_Form(client):
           assert template1.name == 'template1.html'
           assert template.name == 'studenthomepage.html'
           assert 'mail sent to first approver' == context['message']
+          conn = mysql.connector.connect(host="localhost",user="root",password=password,database=database)
           cur = conn.cursor()
           query2 = 'SELECT * from submittedforms where rollno = %s and formtype = %s'
           values2 = ('CS20BTECH11035','Guide_Change_Consent_Form')
@@ -440,6 +465,8 @@ def test_save_instance_Guide_Change_Consent_Form(client):
           cur.execute("SELECT * FROM Guide_Change_Consent_Form WHERE id =%s",(str(form_id),))
           account = cur.fetchone()
           assert account
+          cur.close()
+          conn.close()
 
 #testing save_instance when student submits Guide Consent Form
 def test_save_instance_Guide_Consent_Form(client):
@@ -468,6 +495,7 @@ def test_save_instance_Guide_Consent_Form(client):
           assert template1.name == 'template1.html'
           assert template.name == 'studenthomepage.html'
           assert 'mail sent to first approver' == context['message']
+          conn = mysql.connector.connect(host="localhost",user="root",password=password,database=database)
           cur = conn.cursor()
           query2 = 'SELECT * from submittedforms where rollno = %s and formtype = %s'
           values2 = ('CS20BTECH11035','Guide_Consent_Form')
@@ -478,6 +506,8 @@ def test_save_instance_Guide_Consent_Form(client):
           cur.execute("SELECT * FROM Guide_Consent_Form WHERE id =%s",(str(form_id),))
           account = cur.fetchone()
           assert account
+          cur.close()
+          conn.close()
 
 #testing save_instance when student submits Fellowship Form
 def test_save_instance_Fellowship_Form(client):
@@ -502,6 +532,7 @@ def test_save_instance_Fellowship_Form(client):
           assert template1.name == 'template1.html'
           assert template.name == 'studenthomepage.html'
           assert 'mail sent to first approver' == context['message']
+          conn = mysql.connector.connect(host="localhost",user="root",password=password,database=database)
           cur = conn.cursor()
           query2 = 'SELECT * from submittedforms where rollno = %s and formtype = %s'
           values2 = ('CS20BTECH11035','Fellowship_Form')
@@ -512,3 +543,181 @@ def test_save_instance_Fellowship_Form(client):
           cur.execute("SELECT * FROM Fellowship_Form WHERE id =%s",(str(form_id),))
           account = cur.fetchone()
           assert account
+          cur.close()
+          conn.close()
+
+#testing case student's form gets rejected
+def test_update_instance_reject(client):
+      with client.session_transaction() as sess:
+            sess['id']='1'
+            sess['name']='Manaswini'
+            sess['department']='CSE'
+            sess['email']='cs20btech11035@iith.ac.in'
+            sess['rollno']='CS20BTECH11035'
+            sess['loggedin']= True
+      response = client.post('/update_instance', data=dict(form_id='1',approve='2'), follow_redirects=True)
+      conn = mysql.connector.connect(host="localhost",user="root",password=password,database=database)
+      cur = conn.cursor()
+      query = 'SELECT * from submittedforms where id=%s'
+      values = [1,]
+      cur.execute(query,values)
+      records = cur.fetchall()
+      row = records[-1]
+      status=int(row[-1])
+      cur.close()
+      conn.close()
+      assert status==2
+      assert response.status_code == 200
+      assert b'form rejected.' in response.data
+
+
+#testing save_instance when one approver approves and mails needs to be sent to next approver
+def test_update_instance_next_approver(client):
+      with client.session_transaction() as sess:
+            sess['id']='1'
+            sess['name']='Manaswini'
+            sess['department']='CSE'
+            sess['email']='cs20btech11035@iith.ac.in'
+            sess['rollno']='CS20BTECH11035'
+            sess['loggedin']= True
+      response = client.post('/update_instance', data=dict(form_id='2',approve='1'), follow_redirects=True)
+      conn = mysql.connector.connect(host="localhost",user="root",password=password,database=database)
+      cur = conn.cursor()
+      query = 'SELECT * from submittedforms where id=%s'
+      values = [2,]
+      cur.execute(query,values)
+      records = cur.fetchall()
+      row = records[-1]
+      status=int(row[-1])
+      query = 'SELECT * from Leave_Form where id=%s'
+      values = [2,]
+      cur.execute(query,values)
+      records = cur.fetchall()
+      row = records[-1]
+      cur.close()
+      conn.close()
+      assert status==0
+      assert response.status_code == 200
+      assert b'sent mail to next person.' in response.data
+
+
+#testing save_instance when one approver approves and mails needs to be sent to student that form is approved.
+def test_update_instance_completed(client):
+      with client.session_transaction() as sess:
+            sess['id']='1'
+            sess['name']='Manaswini'
+            sess['department']='CSE'
+            sess['email']='cs20btech11035@iith.ac.in'
+            sess['rollno']='CS20BTECH11035'
+            sess['loggedin']= True
+      conn = mysql.connector.connect(host="localhost",user="root",password=password,database=database)
+      cur = conn.cursor()
+      query = 'SELECT * from submittedforms where id=%s'
+      values = [1,]
+      cur.execute(query,values)
+      records = cur.fetchall()
+      row = records[-1]
+      table_name=row[1]
+      status=int(row[-1])
+      
+      if status!=0:
+            query = 'UPDATE submittedforms set status=%s where id=%s'
+            values = ['0',1]
+            cur.execute(query,values)
+            conn.commit()
+    #   query = 'SELECT * from forms_table where table_name=%s'
+    #   values = [table_name,]
+    #   cur.execute(query,values)
+    #   records = cur.fetchall()
+    #   row = records[-1]
+    #   no_of_approvers=int(row[-1])
+    #   query = 'SELECT * from '+table_name+' where id=%s'
+    #   values = [1,]
+    #   cur.execute(query,values)
+    #   records = cur.fetchall()
+    #   row = records[-1]
+    #   approvelevel = int(row[-1])
+    #   if approvelevel!=no_of_approvers-1:
+    #         print('appp=',approvelevel,no_of_approvers)
+            
+    #         query1='UPDATE '+table_name+' set approvelevel = %s WHERE id = %s'
+    #         values1=(str(no_of_approvers-1),1)
+    #         print(values1)
+    #         cur.execute(query1,values1)
+    #         conn.commit()
+            
+    #   cur.close()
+    #   conn.close()
+    #   conn = mysql.connector.connect(host="localhost",user="root",password=password,database=database)
+    #   cur = conn.cursor()
+    #   query2 = 'select * from '+table_name + ' where id = %s'
+    #   values2 = [1]
+    #   cur.execute(query2,values2)
+    #   row = cur.fetchall()[-1][-1]
+    #   print("approverlevel before update = ",row)
+    #   cur.close()
+    #   conn.close()
+      response = client.post('/update_instance', data=dict(form_id='1',approve='1'), follow_redirects=True)
+      response = client.post('/update_instance', data=dict(form_id='1',approve='1'), follow_redirects=True)
+      response = client.post('/update_instance', data=dict(form_id='1',approve='1'), follow_redirects=True)
+      response = client.post('/update_instance', data=dict(form_id='1',approve='1'), follow_redirects=True)
+      conn = mysql.connector.connect(host="localhost",user="root",password=password,database=database)
+      cur = conn.cursor()
+      query = 'SELECT * from submittedforms where id=%s'
+      values = [1,]
+      cur.execute(query,values)
+      records = cur.fetchall()
+      row = records[-1]
+      table_name=row[1]
+      status=int(row[-1])
+      cur.close()
+      conn.close()
+      assert b'completed approval.' in response.data
+      assert status==1
+      assert response.status_code == 200
+
+
+#testing case when approver tries to approve a form that is already responded.
+# def test_approve_responded(client):
+#       with client.session_transaction() as sess:
+#             sess['id']='1'
+#             sess['name']='Manaswini'
+#             sess['department']='CSE'
+#             sess['email']='cs20btech11035@iith.ac.in'
+#             sess['rollno']='CS20BTECH11035'
+#             sess['loggedin']= True
+#       response = requests.get('/approve/1/0')
+#       assert b'already responded' in response.data
+
+
+#testing case when user tries to open create_form without logging in
+def test_create_form_without_login(client):
+        with client.session_transaction() as sess:
+            sess['loggedin']=False
+        # client.get('/')
+        with captured_templates(app) as templates:
+            response = client.get('/create_form',follow_redirects=True)
+            assert response.status_code == 200
+            template, context = templates[0]
+            assert template.name == 'login.html'
+
+#testing create_form 
+def test_create_form(client):
+      with client.session_transaction() as sess:
+            sess['id']='1'
+            sess['name']='Manaswini'
+            sess['department']='CSE'
+            sess['email']='cs20btech11035@iith.ac.in'
+            sess['rollno']='CS20BTECH11035'
+            sess['loggedin']= True
+      with captured_templates(app) as templates:
+          response = client.get('/create_form',follow_redirects=True)
+          assert response.status_code == 200
+          template, context = templates[-1]
+          assert template.name == 'create_form.html'
+           
+      
+      
+        
+      
+

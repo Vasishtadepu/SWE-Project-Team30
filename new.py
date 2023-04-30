@@ -22,8 +22,8 @@ sender_password = "fgbboncngfheozws"
 mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="1234",
-        database="test"
+        password="2312",
+        database="test2"
         )
 cursor = mydb.cursor()
 
@@ -265,20 +265,21 @@ def update_instance():
         records = cursor.fetchall()
         row = records[-1]
         approvelevel = int(row[-1])+1
+        print(records[-1][-1])
 
 
         query1='UPDATE '+table_name+' set approvelevel=%s WHERE id=%s'
         values1=(str(approvelevel),int(form_id))
         cursor.execute(query1,values1)
         mydb.commit()
-        print(approvelevel)
+        print('xxxxxx=',approvelevel)
         if approvelevel>=int(no_of_approvers):
                  #update submittedforms table that form is approved
                  query2 = 'UPDATE submittedforms SET status=%s WHERE id=%s'
                  values2 = (action,int(form_id))
                  cursor.execute(query2,values2)
                  mydb.commit()
-
+                 print("it came here...")
                  #send mail to student that form is approved                
                  msg = Message(form_name+" Form Approved",
                                sender = sender_mail,
@@ -311,6 +312,7 @@ def update_instance():
     
 @app.route('/approve/<form_id>/<approvelevel>')
 def approve(form_id,approvelevel):
+    print(type(form_id),type(approvelevel))
     query1 = 'SELECT * from submittedforms where id=%s'
     values1 = [int(form_id)]
     cursor.execute(query1,values1)
@@ -324,7 +326,6 @@ def approve(form_id,approvelevel):
     records = cursor.fetchall()
     row = records[-1]
     current_approvelevel = row[-1]
-    print(type(current_approvelevel),type(approvelevel))
     if current_approvelevel==approvelevel and status!='2':
         return render_template('approve.html',form_id=form_id,approvelevel=approvelevel)
     return "already responded"
