@@ -213,10 +213,10 @@ def save_instance():
     no_of_approvers=int(row[-1])
     approver=col_names[-no_of_approvers-1]
     msg = Message(
-        form_name+" Form Approval",
+        form_name+"  Approval",
         sender = sender_mail,
         recipients= [request.form[approver]])
-    msg.html=render_template('template1.html',details=request.form,form_id=form_id,approvelevel=0)
+    msg.html=render_template('template1.html',details=request.form,form_id=form_id,approvelevel=0,form_name=form_name)
     mail.send(msg)
     return render_template('studenthomepage.html', message ='mail sent to first approver')
 
@@ -253,7 +253,7 @@ def update_instance():
         msg = Message(form_name+" Rejected",
                       sender = sender_mail,
                       recipients= [student_mail])
-        msg.body=form_name+" Form is rejected"
+        msg.body=form_name+" is rejected"
         mail.send(msg)
         ret="form rejected."
     #if approver rejects form
@@ -272,16 +272,16 @@ def update_instance():
         values1=(str(approvelevel),int(form_id))
         cursor.execute(query1,values1)
         mydb.commit()
-        print('xxxxxx=',approvelevel)
+        # print('xxxxxx=',approvelevel)
         if approvelevel>=int(no_of_approvers):
                  #update submittedforms table that form is approved
                  query2 = 'UPDATE submittedforms SET status=%s WHERE id=%s'
                  values2 = (action,int(form_id))
                  cursor.execute(query2,values2)
                  mydb.commit()
-                 print("it came here...")
+                #  print("it came here...")
                  #send mail to student that form is approved                
-                 msg = Message(form_name+" Form Approved",
+                 msg = Message(form_name+" Approved",
                                sender = sender_mail,
                                recipients= [student_mail])
                  msg.body="Your "+form_name+" is approved."
@@ -301,10 +301,10 @@ def update_instance():
                  approver=col_names[-int(no_of_approvers)-1+approvelevel]
                  #send mail to next approver
                  approver_mail = req_dict[0][approver]
-                 msg = Message(form_name+" Form Approval",
+                 msg = Message(form_name+" Approval",
                                sender = sender_mail,
                                recipients= [approver_mail])
-                 msg.html=render_template('template1.html',details=req_dict[0],form_id=form_id,approvelevel=approvelevel)
+                 msg.html=render_template('template1.html',details=req_dict[0],form_id=form_id,approvelevel=approvelevel,form_name=form_name)
                  mail.send(msg)
                  ret="sent mail to next person."
     return ret
