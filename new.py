@@ -2,6 +2,14 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flask_mail import Mail,Message
 import mysql.connector
 import MySQLdb.cursors
+import math
+
+
+def encrypt(form_id):
+    return form_id **2 + form_id
+
+def decrypt(form_id):
+    return int((-1 + math.sqrt(4*form_id+1))/2)
 
 app = Flask(__name__)
 app.secret_key = 'your secret key'
@@ -22,7 +30,7 @@ sender_password = "fgbboncngfheozws"
 mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="2312",
+        password="Vasisht@27",
         database="test2"
         )
 cursor = mydb.cursor()
@@ -181,7 +189,7 @@ def save_instance():
     records = cursor.fetchall()
     row = records[-1]
     form_id = row[0]
-
+    form_id_enc = encrypt(form_id)
     #now we need number of coloumns from the table
     query = 'SELECT * from ' + table_name
     cursor.execute(query)
@@ -213,10 +221,10 @@ def save_instance():
     no_of_approvers=int(row[-1])
     approver=col_names[-no_of_approvers-1]
     msg = Message(
-        form_name+"  Approval",
+        "#" + str(form_id) + form_name+"  Approval",
         sender = sender_mail,
         recipients= [request.form[approver]])
-    msg.html=render_template('template1.html',details=request.form,form_id=form_id,approvelevel=0,form_name=form_name)
+    msg.html=render_template('template1.html',details=request.form,form_id=form_id_enc,approvelevel=0,form_name=form_name)
     mail.send(msg)
     return render_template('studenthomepage.html', message ='mail sent to first approver')
 
@@ -226,6 +234,7 @@ def update_instance():
     if session['loggedin']==False:
         return redirect(url_for('login'))
     form_id = request.form['form_id']
+    form_id_enc = encrypt(int(form_id))
     action = request.form['approve']
     query = 'SELECT * from submittedforms where id=%s'
     values = [int(form_id)]
@@ -250,7 +259,7 @@ def update_instance():
         mydb.commit()
 
         #send mail to student that form is rejected
-        msg = Message(form_name+" Rejected",
+        msg = Message("#" + str(form_id) + form_name+" Rejected",
                       sender = sender_mail,
                       recipients= [student_mail])
         msg.body=form_name+" is rejected"
@@ -281,7 +290,7 @@ def update_instance():
                  mydb.commit()
                 #  print("it came here...")
                  #send mail to student that form is approved                
-                 msg = Message(form_name+" Approved",
+                 msg = Message("#" + str(form_id) +form_name+" Approved",
                                sender = sender_mail,
                                recipients= [student_mail])
                  msg.body="Your "+form_name+" is approved."
@@ -301,10 +310,10 @@ def update_instance():
                  approver=col_names[-int(no_of_approvers)-1+approvelevel]
                  #send mail to next approver
                  approver_mail = req_dict[0][approver]
-                 msg = Message(form_name+" Approval",
+                 msg = Message('#'+str(form_id)+form_name + " Approval",
                                sender = sender_mail,
                                recipients= [approver_mail])
-                 msg.html=render_template('template1.html',details=req_dict[0],form_id=form_id,approvelevel=approvelevel,form_name=form_name)
+                 msg.html=render_template('template1.html',details=req_dict[0],form_id=form_id_enc,approvelevel=approvelevel,form_name=form_name)
                  mail.send(msg)
                  ret="sent mail to next person."
     return ret
@@ -312,8 +321,9 @@ def update_instance():
     
 @app.route('/approve/<form_id>/<approvelevel>')
 def approve(form_id,approvelevel):
-    print(type(form_id),type(approvelevel))
+    # print(type(form_id),type(approvelevel))
     query1 = 'SELECT * from submittedforms where id=%s'
+    form_id = decrypt(int(form_id))
     values1 = [int(form_id)]
     cursor.execute(query1,values1)
     records = cursor.fetchall()
@@ -325,20 +335,44 @@ def approve(form_id,approvelevel):
     cursor.execute(query,values)
     records = cursor.fetchall()
     row = records[-1]
+    req_dict = [dict(line) for line in [zip([column[0] for column in cursor.description],row1) for row1 in records]]
+    print(row)
     current_approvelevel = row[-1]
     if current_approvelevel==approvelevel and status!='2':
-        return render_template('approve.html',form_id=form_id,approvelevel=approvelevel)
+        return render_template('approve.html',form_id=form_id,approve_level=int(approvelevel),row = req_dict[0],form_name = table)
     return "already responded"
 
 #Functions which handle history part of the code.
 
 #Function which gives basic detail about the history.
-@app.route('/submitted_forms/<table_name>')
-def submitted_forms(table_name):
+@app.route('/submitted_forms/<table_name>/<roll_no>')
+def submitted_forms(table_name,roll_no):
     if session['loggedin']==False:
         return redirect(url_for('login'))
+    dict_status = {
+        '0' : 'pending',
+        '1' : 'accepted',
+        '2' :'rejected'
+    }
     #getting all the forms submitted by him from submitted forms table.
-    print('It comes here')
+    if session['type'] == 'Admin':
+        if table_name == "all" and roll_no == 'nil':
+            query = 'SELECT * from submittedforms'
+            cursor.execute(query)
+        elif table_name != "all" and roll_no == 'nil':
+            query = 'SELECT * from submittedforms WHERE formtype = %s'
+            values = [table_name]
+            cursor.execute(query,values)
+        elif table_name == 'all' and roll_no != 'nil':
+            query = 'SELECT * from submittedforms WHERE upper(rollno) = %s'
+            values = [roll_no.upper()]
+            cursor.execute(query,values)
+        else:
+            query = 'SELECT * from submittedforms WHERE upper(rollno) = %s and formtype = %s'
+            values = [roll_no.upper(),table_name]
+        records = cursor.fetchall()
+        return render_template("history.html",records = records,dict_status = dict_status,forms_list = get_forms(), table_name=table_name,row_len = len(records))
+
     if table_name == "all":
         query = 'SELECT * from submittedforms WHERE upper(rollno) = %s'
         values = [session['rollno'].upper()]
@@ -348,12 +382,7 @@ def submitted_forms(table_name):
     cursor.execute(query,values)
     records = cursor.fetchall()
     # len = len(records)
-    dict_status = {
-        '0' : 'pending',
-        '1' : 'accepted',
-        '2' :'rejected'
-    }
-    return render_template("history.html",records = records,dict_status = dict_status,forms_list = get_forms(), table_name=table_name)
+    return render_template("history.html",records = records,dict_status = dict_status,forms_list = get_forms(), table_name=table_name,row_len = len(records))
 
 #Function which gives detailed info about the form.
 @app.route('/expanded_history/<form_id>/<form_type>')
@@ -437,7 +466,10 @@ def add_form():
 
 @app.route('/filter',methods = ['GET','POST'])
 def filter():
-    return redirect(url_for('submitted_forms',table_name = request.form['table_name']))
+    roll_no = request.form['rollno']
+    if request.form['rollno'] == '':
+        roll_no = 'nil'
+    return redirect(url_for('submitted_forms',table_name = request.form['table_name'],roll_no = roll_no))
 
 if __name__=="__main__":
     app.run(debug=True)

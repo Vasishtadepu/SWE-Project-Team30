@@ -11,6 +11,9 @@
     <option value="{{table_name}}">{{forms_list[table_name]}}</option>
     {%endfor%}
   </select>
+  {% if session['type'] == 'Admin' %}
+  <input type="text" name = 'rollno' placeholder="Roll No">
+  {%endif%}
   <button type="submit" class="btn btn-primary">Filter</button>
 </form>
 <br>
@@ -26,31 +29,34 @@
             </tr>
           </thead>
           <tbody>
-              {%for row in records%}
-              <tr>
-                <th scope="row">{{row[0]}}</th>
-                <td>{{row[1].replace('_',' ')}}</td>
-                <td>{{dict_status[row[3]]}}</td>
-                <td><a href="{{ url_for('expanded_history',form_id = row[0],form_type = row[1])}}">Expand</a></td>
-              </tr>
-              {%endfor%}
+            {%for row in records%}
+            <tr>
+              <th scope="row">{{row[0]}}</th>
+              <td>{{row[1].replace('_',' ')}}</td>
+              <td>{{dict_status[row[3]]}}</td>
+              <td><a href="{{ url_for('expanded_history',form_id = row[0],form_type = row[1])}}">Expand</a></td>
+            </tr>
+            {%endfor%}
           </tbody>
-        <!-- <tr>
+          <!-- <tr>
             <th>Form Id</th>
             <th>Form Type</th>
             <th>Status</th>
             <th>Expand</th>
-        </tr>
-        {%for row in records%}
-        <tr>
+          </tr>
+          {%for row in records%}
+          <tr>
             <td>{{row[0]}}</td>
             <td>{{row[1]}}</td>
             <td>{{dict_status[row[3]]}}</td>
             <td><a href="http://127.0.0.1:5000/expanded_history/{{row[0]}}/{{row[1]}}">Expand</a></td>
             <br>
-        </tr>
-        {%endfor%} -->
-    </table>
+          </tr>
+          {%endfor%} -->
+        </table>
+        {% if row_len == 0%}
+        <strong>No forms submitted Yet</strong>
+        {%endif%}
 </div>
 {% endblock %}
 
