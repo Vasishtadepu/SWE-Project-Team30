@@ -30,7 +30,7 @@ sender_password = "fgbboncngfheozws"
 mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="Vasisht@27",
+        password="2312",
         database="test2"
         )
 cursor = mydb.cursor()
@@ -415,7 +415,7 @@ def expanded_history(form_id,form_type):
 '''This region handles all the functions related creating a new type of form.'''
 @app.route('/create_form')
 def create_form():
-    if session['loggedin']==False:
+    if session['type']!='Admin':
         return redirect(url_for('login'))
     return render_template('create_form.html')
 

@@ -691,18 +691,19 @@ def test_update_instance_completed(client):
 
 
 #testing case when user tries to open create_form without logging in
-def test_create_form_without_login(client):
+def test_create_form_admin(client):
         with client.session_transaction() as sess:
-            sess['loggedin']=False
+            sess['loggedin']=True
+            sess['type']='Admin'
         # client.get('/')
         with captured_templates(app) as templates:
             response = client.get('/create_form',follow_redirects=True)
             assert response.status_code == 200
             template, context = templates[0]
-            assert template.name == 'login.html'
+            assert template.name == 'create_form.html'
 
 #testing create_form 
-def test_create_form(client):
+def test_create_form_not_admin(client):
       with client.session_transaction() as sess:
             sess['id']='1'
             sess['name']='Manaswini'
@@ -710,11 +711,12 @@ def test_create_form(client):
             sess['email']='cs20btech11035@iith.ac.in'
             sess['rollno']='CS20BTECH11035'
             sess['loggedin']= True
+            sess['type']='Student'
       with captured_templates(app) as templates:
           response = client.get('/create_form',follow_redirects=True)
           assert response.status_code == 200
           template, context = templates[-1]
-          assert template.name == 'create_form.html'
+          assert template.name == 'login.html'
            
       
       
