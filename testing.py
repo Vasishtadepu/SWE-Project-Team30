@@ -3,14 +3,14 @@
 # def test_index_route():
 #     response = app.test_client().get('/')
 #     assert response.status_code == 200
-import flask
+from flask import url_for
 import pytest
 from new import app
 import MySQLdb
 import mysql.connector
 import MySQLdb.cursors
-import unittest
-import requests
+# import unittest
+# import requests
 
 from flask import template_rendered
 from contextlib import contextmanager
@@ -30,27 +30,7 @@ def captured_templates(app):
 def client():
     app.config['TESTING'] = True
     with app.test_client() as client:
-        # with app.app_context():
-            # conn = mysql.connector.connect(host="localhost",user="root",password="2312",database="test2")
-            # cur = conn.cursor()
-            # cur.execute("CREATE TABLE IF NOT EXISTS studentlogin(`id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, `name` varchar(50) NOT NULL, `password` varchar(50) NOT NULL, `email` varchar(50) NOT NULL,`rollno` varchar(50) NOT NULL,`department` varchar(50) NOT NULL)")
-            # conn.commit()
-            # cur.execute("INSERT INTO studentlogin(name,password,email,rollno,department) VALUES ('Manaswini','2312','cs20btech11035@iith.ac.in','CS20BTECH11035','CSE')")
-            # conn.commit()
-            # cur.execute("CREATE TABLE IF NOT EXISTS adminlogin(`id` int(11) NOT NULL AUTO_INCREMENT,`username` varchar(50) NOT NULL,`password` varchar(50) NOT NULL,`email` varchar(50) NOT NULL,PRIMARY KEY(id))")
-            # conn.commit()
-            # cur.execute("INSERT INTO adminlogin(username,password,email) VALUES ('Vasisht','2711','cs20btech11002@iith.ac.in')")
-            # conn.commit()
-
-
-            
         yield client
-        # with app.app_context():
-        #     conn = mysql.connector.connect(host="localhost",user="root",password="2312",database="test2")
-        #     cur = conn.cursor()
-        #     # cur.execute("DROP TABLE IF EXISTS studentlogin")
-        #     # cur.execute("DROP TABLE IF EXISTS adminlogin")
-        #     conn.commit()
 database="test2"
 password="2312"
 
@@ -192,6 +172,29 @@ def test_logout(client):
              template, context = templates[0]
              assert template.name == 'login.html'
 
+# testing formlist without login
+def test_formlist_without_login(client):
+      with client.session_transaction() as sess:
+            sess['loggedin']=False
+        # client.get('/')
+      response = client.get('/formlist',follow_redirects=True)
+      assert response.request.path=='/login'
+
+#testing formlist
+def test_formlist(client):
+        with client.session_transaction() as sess:
+            sess['id']='1'
+            sess['name']='Manaswini'
+            sess['department']='CSE'
+            sess['email']='cs20btech11035@iith.ac.in'
+            sess['rollno']='CS20BTECH11035'
+            sess['loggedin']= True
+        with captured_templates(app) as templates:
+            response = client.get('/formlist',follow_redirects=True)
+            assert response.status_code == 200
+            template, context = templates[0]
+            assert template.name == 'formslist.html'
+
 #testing case when user tries to open create_instance without logging in
 def test_create_instance_without_login(client):
         with client.session_transaction() as sess:
@@ -219,91 +222,6 @@ def test_create_instance_Additional_Course_Conversion_Form(client):
              assert template.name == 'new_form.html'
              assert 'Additional_Course_Conversion_Form' == context['form_name']
              assert 14==len(context['col_names'])
-
-#testing create_instance when user selects Leave Form to fill
-def test_create_instance_Leave_Form(client):
-     with client.session_transaction() as sess:
-            sess['id']='1'
-            sess['name']='Manaswini'
-            sess['department']='CSE'
-            sess['email']='cs20btech11035@iith.ac.in'
-            sess['rollno']='CS20BTECH11035'
-            sess['loggedin']= True
-     with captured_templates(app) as templates:
-             response = client.get('/create_instance',data=dict(Form_type='Leave_Form'),follow_redirects=True)
-             assert response.status_code == 200
-             template, context = templates[0]
-             assert template.name == 'new_form.html'
-             assert 'Leave_Form' == context['form_name']
-             assert 11==len(context['col_names'])
-
-#testing create_instance when user selects JRF to SRF conversion Form to fill
-def test_create_instance_JRF_to_SRF_conversion_Form(client):
-     with client.session_transaction() as sess:
-            sess['id']='1'
-            sess['name']='Manaswini'
-            sess['department']='CSE'
-            sess['email']='cs20btech11035@iith.ac.in'
-            sess['rollno']='CS20BTECH11035'
-            sess['loggedin']= True
-     with captured_templates(app) as templates:
-             response = client.get('/create_instance',data=dict(Form_type='JRF_to_SRF_conversion_Form'),follow_redirects=True)
-             assert response.status_code == 200
-             template, context = templates[0]
-             assert template.name == 'new_form.html'
-             assert 'JRF_to_SRF_conversion_Form' == context['form_name']
-             assert 14==len(context['col_names'])
-
-#testing create_instance when user selects Guide Consent Form to fill
-def test_create_instance_Guide_Consent_Form(client):
-     with client.session_transaction() as sess:
-            sess['id']='1'
-            sess['name']='Manaswini'
-            sess['department']='CSE'
-            sess['email']='cs20btech11035@iith.ac.in'
-            sess['rollno']='CS20BTECH11035'
-            sess['loggedin']= True
-     with captured_templates(app) as templates:
-             response = client.get('/create_instance',data=dict(Form_type='Guide_Consent_Form'),follow_redirects=True)
-             assert response.status_code == 200
-             template, context = templates[0]
-             assert template.name == 'new_form.html'
-             assert 'Guide_Consent_Form' == context['form_name']
-             assert 17==len(context['col_names'])
-
-#testing create_instance when user selects Guide Change Consent Form to fill
-def test_create_instance_Guide_Change_Consent_Form(client):
-     with client.session_transaction() as sess:
-            sess['id']='1'
-            sess['name']='Manaswini'
-            sess['department']='CSE'
-            sess['email']='cs20btech11035@iith.ac.in'
-            sess['rollno']='CS20BTECH11035'
-            sess['loggedin']= True
-     with captured_templates(app) as templates:
-             response = client.get('/create_instance',data=dict(Form_type='Guide_Change_Consent_Form'),follow_redirects=True)
-             assert response.status_code == 200
-             template, context = templates[0]
-             assert template.name == 'new_form.html'
-             assert 'Guide_Change_Consent_Form' == context['form_name']
-             assert 8==len(context['col_names'])
-
-#testing create_instance when user selects Fellowship Form to fill
-def test_create_instance_Fellowship_Form(client):
-     with client.session_transaction() as sess:
-            sess['id']='1'
-            sess['name']='Manaswini'
-            sess['department']='CSE'
-            sess['email']='cs20btech11035@iith.ac.in'
-            sess['rollno']='CS20BTECH11035'
-            sess['loggedin']= True
-     with captured_templates(app) as templates:
-             response = client.get('/create_instance',data=dict(Form_type='Fellowship_Form'),follow_redirects=True)
-             assert response.status_code == 200
-             template, context = templates[0]
-             assert template.name == 'new_form.html'
-             assert 'Fellowship_Form' == context['form_name']
-             assert 12==len(context['col_names'])
     
 #testing case when user tries to open save_instance without logging in
 def test_save_instance_without_login(client):
@@ -430,122 +348,6 @@ def test_save_instance_JRF_to_SRF_conversion_Form(client):
           cur.close()
           conn.close()
 
-
-#testing save_instance when student submits Guide Change Consent Form
-def test_save_instance_Guide_Change_Consent_Form(client):
-     with client.session_transaction() as sess:
-            sess['id']='1'
-            sess['name']='Manaswini'
-            sess['department']='CSE'
-            sess['email']='cs20btech11035@iith.ac.in'
-            sess['rollno']='CS20BTECH11035'
-            sess['loggedin']= True
-     with captured_templates(app) as templates:
-          response = client.get(
-                '/save_instance',data=dict(table_name='Guide_Change_Consent_Form',Name='Manaswini',Roll_No='CS20BTECH11035',
-                                            Department='CSE',Present_Guide_Name='Dr.Ramu' ,Proposed_Guide_Name= 'Dr.Ramakrishna Upadrasta',
-                                            HoD_Name= 'Subramanyam Kalyansundaram',Present_Guide_Mail='manaswininyalapogula@gmail.com',
-                                            Proposed_Guide_Mail ='manaswininyalapogula@gmail.com',
-                                            Deputy_Registrar_Mail='manaswininyalapogula@gmail.com',Dean_Mail='manaswininyalapogula@gmail.com'
-                                            ),follow_redirects=True)
-          assert response.status_code == 200
-          template, context = templates[-1]
-          template1, context1 = templates[0]
-          assert template1.name == 'template1.html'
-          assert template.name == 'studenthomepage.html'
-          assert 'mail sent to first approver' == context['message']
-          conn = mysql.connector.connect(host="localhost",user="root",password=password,database=database)
-          cur = conn.cursor()
-          query2 = 'SELECT * from submittedforms where rollno = %s and formtype = %s'
-          values2 = ('CS20BTECH11035','Guide_Change_Consent_Form')
-          cur.execute(query2,values2)
-          records = cur.fetchall()
-          row = records[-1]
-          form_id = row[0]
-          cur.execute("SELECT * FROM Guide_Change_Consent_Form WHERE id =%s",(str(form_id),))
-          account = cur.fetchone()
-          assert account
-          cur.close()
-          conn.close()
-
-#testing save_instance when student submits Guide Consent Form
-def test_save_instance_Guide_Consent_Form(client):
-     with client.session_transaction() as sess:
-            sess['id']='1'
-            sess['name']='Manaswini'
-            sess['department']='CSE'
-            sess['email']='cs20btech11035@iith.ac.in'
-            sess['rollno']='CS20BTECH11035'
-            sess['loggedin']= True
-     with captured_templates(app) as templates:
-          response = client.get(
-                '/save_instance',data=dict(table_name='Guide_Consent_Form',Name='Manaswini',Roll_No='CS20BTECH11035',
-                                           Joining_Date='2/5/2021',Department='CSE',Choose_the_supervisor_at_end_or_at_last_of_first_Semester='first' ,
-                                           Faculty1_Name= 'Dr.Ramakrishna Upadrasta', Faculty2_Name= 'Dr.Ramakrishna Upadrasta', Faculty3_Name= 'Dr.Ramakrishna Upadrasta',
-                                           Faculty4_Name= 'Dr.Ramakrishna Upadrasta',Faculty5_Name= 'Dr.Ramakrishna Upadrasta',
-                                           Guide_Mail='manaswininyalapogula@gmail.com',
-                                            CoGuide_Mail ='manaswininyalapogula@gmail.com',
-                                            DPGC_Mail='manaswininyalapogula@gmail.com',HoD_Mail='manaswininyalapogula@gmail.com',
-                                            Faculty1_Mail='manaswininyalapogula@gmail.com', Faculty2_Mail='manaswininyalapogula@gmail.com',Faculty3_Mail='manaswininyalapogula@gmail.com',
-                                            Faculty4_Mail='manaswininyalapogula@gmail.com',Faculty5_Mail='manaswininyalapogula@gmail.com'
-                                            ),follow_redirects=True)
-          assert response.status_code == 200
-          template, context = templates[-1]
-          template1, context1 = templates[0]
-          assert template1.name == 'template1.html'
-          assert template.name == 'studenthomepage.html'
-          assert 'mail sent to first approver' == context['message']
-          conn = mysql.connector.connect(host="localhost",user="root",password=password,database=database)
-          cur = conn.cursor()
-          query2 = 'SELECT * from submittedforms where rollno = %s and formtype = %s'
-          values2 = ('CS20BTECH11035','Guide_Consent_Form')
-          cur.execute(query2,values2)
-          records = cur.fetchall()
-          row = records[-1]
-          form_id = row[0]
-          cur.execute("SELECT * FROM Guide_Consent_Form WHERE id =%s",(str(form_id),))
-          account = cur.fetchone()
-          assert account
-          cur.close()
-          conn.close()
-
-#testing save_instance when student submits Fellowship Form
-def test_save_instance_Fellowship_Form(client):
-     with client.session_transaction() as sess:
-            sess['id']='1'
-            sess['name']='Manaswini'
-            sess['department']='CSE'
-            sess['email']='cs20btech11035@iith.ac.in'
-            sess['rollno']='CS20BTECH11035'
-            sess['loggedin']= True
-     with captured_templates(app) as templates:
-          response = client.get(
-                '/save_instance',data=dict(table_name='Fellowship_Form',Name='Manaswini',Roll_No='CS20BTECH11035',
-                                            Department='CSE',Joining_Year='2004',Stream='PHD', Scholarship_Month='5',
-                                            Number_of_Days_Attended='30', Amount_of_Stipend='10,000 rupees',
-                                            Scholarship_Type='CSIR', Project='CPS', Supervisor_Name='Dr.Aravind',
-                                            Faculty_Name='Dr.Karteek',Supervisor_Mail='manaswininyalapogula@gmail.com',Faculty_Mail ='manaswininyalapogula@gmail.com'
-                                            ),follow_redirects=True)
-          assert response.status_code == 200
-          template, context = templates[-1]
-          template1, context1 = templates[0]
-          assert template1.name == 'template1.html'
-          assert template.name == 'studenthomepage.html'
-          assert 'mail sent to first approver' == context['message']
-          conn = mysql.connector.connect(host="localhost",user="root",password=password,database=database)
-          cur = conn.cursor()
-          query2 = 'SELECT * from submittedforms where rollno = %s and formtype = %s'
-          values2 = ('CS20BTECH11035','Fellowship_Form')
-          cur.execute(query2,values2)
-          records = cur.fetchall()
-          row = records[-1]
-          form_id = row[0]
-          cur.execute("SELECT * FROM Fellowship_Form WHERE id =%s",(str(form_id),))
-          account = cur.fetchone()
-          assert account
-          cur.close()
-          conn.close()
-
 #testing case student's form gets rejected
 def test_update_instance_reject(client):
       with client.session_transaction() as sess:
@@ -625,38 +427,6 @@ def test_update_instance_completed(client):
             values = ['0',1]
             cur.execute(query,values)
             conn.commit()
-    #   query = 'SELECT * from forms_table where table_name=%s'
-    #   values = [table_name,]
-    #   cur.execute(query,values)
-    #   records = cur.fetchall()
-    #   row = records[-1]
-    #   no_of_approvers=int(row[-1])
-    #   query = 'SELECT * from '+table_name+' where id=%s'
-    #   values = [1,]
-    #   cur.execute(query,values)
-    #   records = cur.fetchall()
-    #   row = records[-1]
-    #   approvelevel = int(row[-1])
-    #   if approvelevel!=no_of_approvers-1:
-    #         print('appp=',approvelevel,no_of_approvers)
-            
-    #         query1='UPDATE '+table_name+' set approvelevel = %s WHERE id = %s'
-    #         values1=(str(no_of_approvers-1),1)
-    #         print(values1)
-    #         cur.execute(query1,values1)
-    #         conn.commit()
-            
-    #   cur.close()
-    #   conn.close()
-    #   conn = mysql.connector.connect(host="localhost",user="root",password=password,database=database)
-    #   cur = conn.cursor()
-    #   query2 = 'select * from '+table_name + ' where id = %s'
-    #   values2 = [1]
-    #   cur.execute(query2,values2)
-    #   row = cur.fetchall()[-1][-1]
-    #   print("approverlevel before update = ",row)
-    #   cur.close()
-    #   conn.close()
       response = client.post('/update_instance', data=dict(form_id='1',approve='1'), follow_redirects=True)
       response = client.post('/update_instance', data=dict(form_id='1',approve='1'), follow_redirects=True)
       response = client.post('/update_instance', data=dict(form_id='1',approve='1'), follow_redirects=True)
@@ -718,8 +488,93 @@ def test_create_form_not_admin(client):
           template, context = templates[-1]
           assert template.name == 'login.html'
            
+#testing filter function
+def test_filter(client):
+      with client.session_transaction() as sess:
+            sess['id']='1'
+            sess['name']='Manaswini'
+            sess['department']='CSE'
+            sess['email']='cs20btech11035@iith.ac.in'
+            sess['rollno']='CS20BTECH11035'
+            sess['loggedin']= True
+            sess['type']='Student'
+      with app.app_context():
+        response = client.post('/filter',data=dict(rollno='CS20BTECH11035',table_name='Leave_Form'),follow_redirects=True)
+        assert response.status_code == 200
+        assert response.request.path=='/submitted_forms/Leave_Form/CS20BTECH11035'
       
-      
-        
-      
+#testing approve function
+def test_approve(client):
+      with captured_templates(app) as templates:
+          response = client.get('/approve/12/0',follow_redirects=True)
+          assert response.status_code == 200
+          template, context = templates[-1]
+          assert template.name == 'approve.html'           
 
+#testing approve function when approver tries to respond to already responded form
+def test_approve(client):
+          response = client.get('/approve/6/0',follow_redirects=True)
+          assert response.status_code == 200
+          assert b'already responded' in response.data
+
+#testing expanded_history without login
+def test_expanded_history_without_login(client):
+      with client.session_transaction() as sess:
+            sess['loggedin']=False
+        # client.get('/')
+      response = client.get('/expanded_history/2/Leave_Form',follow_redirects=True)
+      assert response.request.path=='/login'
+
+#testing expanded_history
+def test_expanded_history(client):
+      with client.session_transaction() as sess:
+            sess['id']='1'
+            sess['name']='Manaswini'
+            sess['department']='CSE'
+            sess['email']='cs20btech11035@iith.ac.in'
+            sess['rollno']='CS20BTECH11035'
+            sess['loggedin']= True
+            sess['type']='Student'
+      with captured_templates(app) as templates:
+          response = client.get('/expanded_history/2/Leave_Form',follow_redirects=True)
+          assert response.status_code == 200
+          template, context = templates[-1]
+          assert template.name == 'expanded.html'
+
+# testing submitted_forms without login
+def test_submitted_forms_without_login(client):
+      with client.session_transaction() as sess:
+            sess['loggedin']=False
+        # client.get('/')
+      response = client.get('/submitted_forms/all/nil',follow_redirects=True)
+      assert response.request.path=='/login'
+      
+#testing admin submitted_forms page with no filters
+def test_admin_submitted_forms(client):
+      with client.session_transaction() as sess:
+            sess['id']='1'
+            sess['name']='Vasisht'
+            sess['email']='cs20btech11002@iith.ac.in'
+            sess['loggedin']= True
+            sess['type']='Admin'
+      with captured_templates(app) as templates:
+          response = client.get('/submitted_forms/all/nil',follow_redirects=True)
+          assert response.status_code == 200
+          template, context = templates[-1]
+          assert template.name == 'history.html'
+
+#testing student submitted_forms with no filters
+def test_student_submitted_forms(client):
+      with client.session_transaction() as sess:
+            sess['id']='1'
+            sess['name']='Manaswini'
+            sess['department']='CSE'
+            sess['email']='cs20btech11035@iith.ac.in'
+            sess['rollno']='CS20BTECH11035'
+            sess['loggedin']= True
+            sess['type']='Student'
+      with captured_templates(app) as templates:
+          response = client.get('/submitted_forms/all/nil',follow_redirects=True)
+          assert response.status_code == 200
+          template, context = templates[-1]
+          assert template.name == 'history.html'
