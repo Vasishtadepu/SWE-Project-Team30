@@ -25,8 +25,16 @@
 {% extends "base.html" %}
 {% block app %}
 <div class="main-block">
+    <div class="alert alert-success" role="alert">
+        Please limit each field to 20 characters and alphanumeric only
+      </div>
+    {%if message%}
+    <div class="alert alert-success" role="alert">
+        {{message}}
+      </div>
+    {%endif%}
     <button class="btn btn-primary" onclick="increase_text()" id = "increase_text">Increase Text Fields</button>
-    <button class="btn btn-primary" onclick = "remove_text()" >Remover a text field</button>
+    <button class="btn btn-primary" onclick = "remove_text()" >Remove a text field</button>
     <button onclick = "increase_approver()" id = 'increase_approver' class="btn btn-primary">Increase approver fields</button>
     <button onclick = "decrease_approver()" class="btn btn-primary">Decrease Approver Fields</button>
 <form action="\add_form" method="post">

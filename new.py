@@ -3,13 +3,24 @@ from flask_mail import Mail,Message
 import mysql.connector
 import MySQLdb.cursors
 import math
-
+from email_validator import validate_email, EmailNotValidError
+from validate_email import validate_email
+from collections import Counter
 
 def encrypt(form_id):
     return form_id **2 + form_id
 
 def decrypt(form_id):
     return int((-1 + math.sqrt(4*form_id+1))/2)
+
+def check(email):
+    print("Hello here",validate_email(email,verify=True))
+    if email.endswith("@iith.ac.in") == False:
+        return 0
+    elif validate_email(email,verify=True) == None:
+        return 0
+    return 1
+
 
 app = Flask(__name__)
 app.secret_key = 'your secret key'
@@ -30,7 +41,7 @@ sender_password = "fgbboncngfheozws"
 mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="2312",
+        password="Vasisht@27",
         database="test2"
         )
 cursor = mydb.cursor()
@@ -43,7 +54,7 @@ def get_forms():
     dict = {}
     for row in records:
         dict[row[1]] = row[0]
-    print(dict)
+    # print(dict)
     return dict
 
 
@@ -99,14 +110,16 @@ def register():
         username = request.form['username']
         password = request.form['password']
         email = request.form['email']
-        rollno = request.form['rollno']
+        rollno = request.form['rollno'].upper()
         department = request.form['department']
         # cursor = mysql.connection.cursor(cursor.DictCursor)
         values = (str(email),)
         cursor.execute('SELECT * FROM studentlogin WHERE email = %s', values)
         account = cursor.fetchone()
-        print(account)
-        if account:
+        # print(account)
+        if check(email)==0:
+            msg = "Please enter a valid email"
+        elif account:
             msg = 'Account already exists !'
         elif not username or not password or not email or not rollno or not department:
             msg = 'Please fill out the form !'
@@ -117,13 +130,13 @@ def register():
             return render_template('login.html', message = msg)
     elif request.method == 'POST':
         msg = 'Please fill out the form !'
-    print(msg)
+    # print(msg)
     return render_template('register.html', message = msg)
 
 @app.route('/homepage')
 def homepage():
     # print("Here")
-    print(session)
+    # print(session)
     if session['loggedin']==False:
         return render_template('login.html', message='Please login to continue !')
     if session['type'] == 'Admin':
@@ -196,13 +209,13 @@ def save_instance():
     records = cursor.fetchall()
     col_names = [i[0] for i in cursor.description]
     num = len(col_names)
-    print(num)
+    # print(num)
     #Now we need to insert into 
     per_s =''
     for i in range(num-1):
         per_s += '%s,'
     per_s += '%s'
-    print(per_s)
+    # print(per_s)
     query3 = 'INSERT INTO '+request.form['table_name'] + ' VALUES ('+per_s+')'
     values = []
     values.append(form_id)
@@ -210,7 +223,7 @@ def save_instance():
         if keys!= 'table_name':
                 values.append(request.form[keys])
     values.append('0')
-    print(values)
+    # print(values)
     cursor.execute(query3,values)
     mydb.commit()
     #finding number of approvers
@@ -274,7 +287,7 @@ def update_instance():
         records = cursor.fetchall()
         row = records[-1]
         approvelevel = int(row[-1])+1
-        print(records[-1][-1])
+        # print(records[-1][-1])
 
 
         query1='UPDATE '+table_name+' set approvelevel=%s WHERE id=%s'
@@ -336,7 +349,7 @@ def approve(form_id,approvelevel):
     records = cursor.fetchall()
     row = records[-1]
     req_dict = [dict(line) for line in [zip([column[0] for column in cursor.description],row1) for row1 in records]]
-    print(row)
+    # print(row)
     current_approvelevel = row[-1]
     if current_approvelevel==approvelevel and status!='2':
         return render_template('approve.html',form_id=form_id,approve_level=int(approvelevel),row = req_dict[0],form_name = table)
@@ -426,6 +439,13 @@ def add_form():
         return redirect(url_for('login'))
     #First we get the form name and the number of approvers.
     #To push into the forms_table.
+    #Checking whether there are duplicate coloumns
+
+    count_dict = Counter(request.form.values())
+    result = [key for key, value in request.form.items()
+                          if count_dict[value] > 1]
+    if len(result)!=0:
+        return render_template('create_form.html',message = "No duplicate coloumns pls")
     form_name = request.form['form_name']
     table_name = request.form['form_name'].replace(' ','_')
     keys_list = list(request.form.keys())
@@ -458,8 +478,8 @@ def add_form():
         i=i+1
 
     create_stement =create_stement +col_names[i] +'  '+col_data_type[i]+' )'
-    print(create_stement)
-    print(len(create_stement))
+    # print(create_stement)
+    # print(len(create_stement))
     cursor.execute(create_stement)
     mydb.commit()
     return render_template('adminhomepage.html',message = "Form Added")

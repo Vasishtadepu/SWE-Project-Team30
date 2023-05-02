@@ -17,7 +17,7 @@
     <tbody>
         {% for key,value in row.items() %}
             <tr>
-                <td>{{key.capitalize()}}</td>
+                <td>{{key.replace('_',' ').capitalize()}}</td>
                 <td>{{value}}</td>
             </tr>
         {% endfor %}
