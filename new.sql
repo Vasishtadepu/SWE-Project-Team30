@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS `submittedforms`
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `formtype` varchar(100) NOT NULL,
     `rollno` varchar(50) NOT NULL,
+    `password` varchar(50) NOT NULL,
     `status` varchar(50) NOT NULL,
     PRIMARY KEY(id)
 

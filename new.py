@@ -6,6 +6,15 @@ import math
 from email_validator import validate_email, EmailNotValidError
 from validate_email import validate_email
 from collections import Counter
+import random
+import string
+
+# get random string of letters and digits
+def generate_password():
+    source = string.ascii_letters + string.digits
+    result_str = ''.join((random.choice(source) for i in range(8)))
+    print('password=',result_str)
+    return result_str
 
 def encrypt(form_id):
     return form_id **2 + form_id
@@ -206,8 +215,9 @@ def save_instance():
             return render_template('new_form.html',col_names = col_names,form_name = table_name,message="Please enter valid approver email id")
     #form_name=get_forms()[table_name]
     #Now we push the submitted form into submitted_forms table.
-    query1 = 'INSERT INTO submittedforms (formtype,rollno,status) VALUES (%s,%s,%s)'
-    values1 = [table_name,request.form['Roll_No'],'0']
+    password=generate_password()
+    query1 = 'INSERT INTO submittedforms (formtype,rollno,password,status) VALUES (%s,%s,%s,%s)'
+    values1 = [table_name,request.form['Roll_No'],password,'0']
     cursor.execute(query1,values1)
     mydb.commit()
 
@@ -253,7 +263,7 @@ def save_instance():
         "#" + str(form_id) + form_name+"  Approval",
         sender = sender_mail,
         recipients= [request.form[approver]])
-    msg.html=render_template('template1.html',details=request.form,form_id=form_id_enc,approvelevel=0,form_name=form_name)
+    msg.html=render_template('template1.html',form_id=form_id_enc,approvelevel=0,password=password)
     mail.send(msg)
     return render_template('studenthomepage.html', message ='mail sent to first approver')
 
@@ -271,6 +281,7 @@ def update_instance():
     records = cursor.fetchall()
     row = records[-1]
     table_name=row[1]
+    password=row[3]
     student_mail = session['email']
     query = 'SELECT * from forms_table where table_name=%s'
     values = [table_name]
@@ -342,12 +353,37 @@ def update_instance():
                  msg = Message('#'+str(form_id)+form_name + " Approval",
                                sender = sender_mail,
                                recipients= [approver_mail])
-                 msg.html=render_template('template1.html',details=req_dict[0],form_id=form_id_enc,approvelevel=approvelevel,form_name=form_name)
+                 msg.html=render_template('template1.html',form_id=form_id_enc,approvelevel=approvelevel,password=password)
                  mail.send(msg)
                  ret="sent mail to next person."
     return ret
 
-    
+#check if password is correct
+@app.route('/check_password',methods = ['GET','POST'])
+def check_password():
+    form_id_enc=request.form['form_id']
+    print(' encrypted id=', form_id_enc)
+    form_id = decrypt(int(form_id_enc))
+    approvelevel=request.form['approvelevel']
+    password=request.form['password']
+    query = 'SELECT * from submittedforms where id=%s'
+    values = [int(form_id)]
+    cursor.execute(query,values)
+    records = cursor.fetchall()
+    row = records[-1]
+    actual_password=row[3]
+    print('actual password=',actual_password,' password=',password,' id=',form_id,' row=',row)
+    if actual_password==password:
+        return redirect(url_for('approve',form_id=form_id_enc,approvelevel=approvelevel))
+    return render_template('password.html',form_id=form_id_enc,approvelevel=approvelevel)
+
+#check if password is correct
+@app.route('/password/<form_id>/<approvelevel>')
+def password(form_id,approvelevel):
+        print('form_id=',form_id,' approvelevel=',approvelevel)
+        return render_template('password.html',form_id=form_id,approvelevel=approvelevel)
+
+
 @app.route('/approve/<form_id>/<approvelevel>')
 def approve(form_id,approvelevel):
     # print(type(form_id),type(approvelevel))
