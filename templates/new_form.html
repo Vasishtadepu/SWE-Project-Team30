@@ -1,6 +1,11 @@
 
 {% extends "base.html" %}
 {% block app %}
+{%if message%}
+    <div class="alert alert-success" role="alert">
+        {{message}}
+      </div>
+    {%endif%}
 <div class="container main-block">
     <h1>{{form_name.replace('_',' ')}}</h1>
     <form action="\save_instance" method="post">

@@ -41,7 +41,7 @@ sender_password = "fgbboncngfheozws"
 mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="Vasisht@27",
+        password="2312",
         database="test2"
         )
 cursor = mydb.cursor()
@@ -188,7 +188,23 @@ def save_instance():
     if session['loggedin']==False:
         return redirect(url_for('login'))
     table_name = request.form['table_name']
-    form_name=get_forms()[table_name]
+    #check if user entered valid approver mail ids
+    query = 'SELECT * from forms_table where table_name=%s'
+    values = [table_name]
+    cursor.execute(query,values)
+    records = cursor.fetchall()
+    row = records[-1]
+    form_name=row[0]
+    no_of_approvers=int(row[-1])
+
+    request_form_list=list(request.form.values())
+    col_names=list(request.form.keys())
+    for i in range(2,no_of_approvers+2):
+        email= request_form_list[-i]
+        if validate_email(email,verify=True) == None:
+            print('i=',i,' email=',email)
+            return render_template('new_form.html',col_names = col_names,form_name = table_name,message="Please enter valid approver email id")
+    #form_name=get_forms()[table_name]
     #Now we push the submitted form into submitted_forms table.
     query1 = 'INSERT INTO submittedforms (formtype,rollno,status) VALUES (%s,%s,%s)'
     values1 = [table_name,request.form['Roll_No'],'0']
