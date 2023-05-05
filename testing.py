@@ -5,7 +5,7 @@
 #     assert response.status_code == 200
 from flask import url_for
 import pytest
-from new import app
+from backend import app
 import MySQLdb
 import mysql.connector
 import MySQLdb.cursors
@@ -32,7 +32,7 @@ def client():
     with app.test_client() as client:
         yield client
 database="test2"
-password="2312"
+password="Vasisht@27"
 
 #testing case when student enters correct credentials
 def test_student_login_success(client):
