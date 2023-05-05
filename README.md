@@ -9,16 +9,17 @@ Start mysql server
 ```
 mysql -u root -p
 ```
-And create a database of your liking with your own name.
+And create a database named 'test2'
 ```
-use 'your_database_name';
+use test2;
 source 'path to new.sql';
 source 'path to forms.sql';
 ```
 Note that paths to new.sql and forms.sql should be **absolute** and relative paths.
 Navigate to the project folder and open a bash terminal there and run the following command.
 ```python3 backend.py```
-It will prompt you for a database name, enter the name of the database you created in the above steps along with your MySQL password.
+
+**Note that you need change the MySQL password in backend.py and in testing.py to make the code work.**
 
 Then open the following link [Website](http://127.0.0.1:5000/)
 
@@ -49,5 +50,13 @@ Click the create a new form option which will send you to the page, Name and Rol
 
 ### To check submitted forms.
 Here you can see all the forms submitted by the students and you can filter them based on the form type or roll no of the student you want the form of.
+
+## To test the code.
+Run the following command 
+```
+source 'path to testing.sql'
+python3 -m pytest testing.py
+```
+Path to testing.sql should be **absolute**
 
 

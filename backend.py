@@ -21,8 +21,7 @@ def check(email):
         return 0
     return 1
 
-database_name = input("Please enter the name of the database: ")
-database_password = input("Please enter MySQL password: ")
+
 
 app = Flask(__name__)
 app.secret_key = 'your secret key'
@@ -43,8 +42,8 @@ sender_password = "fgbboncngfheozws"
 mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        password=database_password,
-        database=database_name
+        password="Vasisht@27",
+        database="test2"
         )
 cursor = mydb.cursor()
 

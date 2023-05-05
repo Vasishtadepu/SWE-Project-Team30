@@ -26,6 +26,8 @@ def captured_templates(app):
     finally:
         template_rendered.disconnect(record, app)
 
+
+
 @pytest.fixture
 def client():
     app.config['TESTING'] = True
