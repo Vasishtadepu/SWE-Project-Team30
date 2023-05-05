@@ -39,9 +39,9 @@ Select the submitted forms button from the navbar and here you can see a list of
 
 ## If you are an admin
 ### To open admin panel
-Since no admins have been fixed we have implemented a dummy admin account with the following login details.
-Email : cs20btech11002@iith.ac.in
-Password : 2712
+Since no admins have been fixed we have implemented a dummy admin account with the following login details.\
+Email : cs20btech11002@iith.ac.in\
+Password : 2712\
 Make sure that you login using Admin option selected
 
 ### To create a new form
